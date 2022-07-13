@@ -93,7 +93,7 @@ sudo tee /etc/nomad.d/nomad.hcl > /dev/null <<EOF
 name            = "${node_name}"
 data_dir        = "${data_dir}/nomad"
 enable_debug    = true
-bind_addr       = "${bind_addr}"
+bind_addr       = "0.0.0.0"
 datacenter      = "${datacenter}"
 region          = "${region}"
 enable_syslog   = "true"

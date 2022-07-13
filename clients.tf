@@ -9,7 +9,6 @@ data "template_file" "client" {
   vars = {
     client_count        = var.client_count
     data_dir            = var.data_dir
-    bind_addr           = var.bind_addr
     datacenter          = var.datacenter
     region              = var.region
     client              = var.client

@@ -1,4 +1,8 @@
 
+locals {
+  nomad_throttle   = var.nomad_enabled != "true" ? 0 : 1
+}
+
 data "template_file" "client" {
   count = var.client_count
   template = "${join("\n", tolist([
@@ -37,7 +41,7 @@ data "template_cloudinit_config" "client" {
 }
 
 resource "aws_instance" "client" {
-  count                       = {var.nomad_enabled = "true" ? 1 : 0} * var.client_count
+  count                       = var.nomad_enabled != "true" ? 0 : 1 * var.client_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
   subnet_id                   = element(aws_subnet.nomad_subnet.*.id, count.index)

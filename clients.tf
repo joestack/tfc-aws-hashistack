@@ -37,7 +37,7 @@ data "template_cloudinit_config" "client" {
 }
 
 resource "aws_instance" "client" {
-  count                       = var.client_count
+  count                       = var.nomad_enabled * var.client_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
   subnet_id                   = element(aws_subnet.nomad_subnet.*.id, count.index)

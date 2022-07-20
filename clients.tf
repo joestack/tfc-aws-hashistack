@@ -1,7 +1,4 @@
 
-locals {
-  nomad_throttle   = var.nomad_enabled != "true" ? 0 : 1
-}
 
 data "template_file" "client" {
   count = var.client_count

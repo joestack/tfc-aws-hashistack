@@ -60,7 +60,7 @@ resource "tls_locally_signed_cert" "vault" {
     count = var.vault_tls_enabled ? 1 : 0
   cert_request_pem = tls_cert_request.vault[count.index].cert_request_pem
 
-  ca_key_algorithm   = tls_private_key.ca[count.index].algorithm
+  #ca_key_algorithm   = tls_private_key.ca[count.index].algorithm
   ca_private_key_pem = tls_private_key.ca[count.index].private_key_pem
   ca_cert_pem        = tls_self_signed_cert.ca[count.index].cert_pem
 

@@ -289,7 +289,7 @@ sudo chown -R vault:vault /etc/vault.d/
 }
 
 additionals() {
-sudo apt-get -y install consul-template
+sudo apt-get -y install consul-template jq
 }
 
 tutorial() {

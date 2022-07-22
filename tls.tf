@@ -6,7 +6,7 @@ resource "tls_private_key" "ca" {
 
 resource "tls_self_signed_cert" "ca" {
     count = var.vault_tls_enabled ? 1 : 0
-  key_algorithm     = tls_private_key.ca[count.index].algorithm
+  #key_algorithm     = tls_private_key.ca[count.index].algorithm
   private_key_pem   = tls_private_key.ca[count.index].private_key_pem
   is_ca_certificate = true
 
@@ -34,7 +34,7 @@ resource "tls_private_key" "vault" {
 
 resource "tls_cert_request" "vault" {
     count = var.vault_tls_enabled ? 1 : 0
-    key_algorithm   = tls_private_key.vault[count.index].algorithm
+    #key_algorithm   = tls_private_key.vault[count.index].algorithm
     private_key_pem = tls_private_key.vault[count.index].private_key_pem
     subject {
       common_name  = var.common_name

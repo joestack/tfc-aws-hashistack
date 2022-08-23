@@ -24,7 +24,9 @@ data "template_file" "server" {
     data_dir            = var.data_dir
     datacenter          = var.datacenter
     region              = var.region
-    nomad_join          = var.tag_value
+    autojoin_key        = var.autojoin_key
+    autojoin_value      = var.autojoin_value
+    #nomad_join          = var.tag_value
     node_name           = format("${var.server_name}-%02d", count.index +1)
     nomad_enabled       = var.nomad_enabled
     nomad_version       = var.nomad_version

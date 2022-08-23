@@ -53,6 +53,16 @@ variable "data_dir" {
   default     = "/opt"
 }
 
+variable "autojoin_key" {
+  description = "auto_join tag_key"
+  default = "joestack_hc_stack_srv"
+}
+
+variable "autojoin_value" {
+  description = "auto_join tag_value"
+  default = "joestack_hc_stack_join"
+}
+
 
 //NOMAD SETTINGS
 

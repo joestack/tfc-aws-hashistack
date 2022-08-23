@@ -29,7 +29,7 @@ server {
   bootstrap_expect = ${server_count}
   license_path     = "${data_dir}/nomad/license.hclic"
   server_join {
-    retry_join = ["provider=aws tag_key=nomad_join tag_value=${nomad_join}"]
+    retry_join = ["provider=aws tag_key=${autojoin_key} tag_value=${autojoin_value}"]
   }
 }
 
@@ -131,7 +131,7 @@ advertise_addr   = "$(private_ip)"
 client_addr      = "0.0.0.0"
 ui               = true
 datacenter       = "${datacenter}"
-retry_join       = ["provider=aws tag_key=nomad_join tag_value=${nomad_join}"]
+retry_join       = ["provider=aws tag_key=${autojoin_key} tag_value=${autojoin_value}"]
 retry_max        = 10
 retry_interval   = "15s"
 
@@ -214,7 +214,7 @@ storage "raft" {
     node_id = "${node_name}"
     retry_join {
         leader_tls_servername = "${node_name}.${dns_domain}"
-        auto_join = "provider=aws tag_key=nomad_join tag_value=${nomad_join}"
+        auto_join = "provider=aws tag_key=${autojoin_key} tag_value=${autojoin_value}"
     }
 }
 

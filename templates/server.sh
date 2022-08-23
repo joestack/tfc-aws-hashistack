@@ -17,32 +17,27 @@ bind_addr       = "0.0.0.0"
 datacenter      = "${datacenter}"
 region          = "${region}"
 enable_syslog   = "true"
-
 advertise {
   http = "$(private_ip):4646"
   rpc  = "$(private_ip):4647"
   serf = "$(private_ip):4648"
 }
-
 server {
   enabled          = "true"
   bootstrap_expect = ${server_count}
   license_path     = "${data_dir}/nomad/license.hclic"
   server_join {
-    retry_join = ["provider=aws tag_key=joestack_join tag_value=${autojoin_value}"]
+    retry_join = ["provider=aws tag_key=nomad_join tag_value=${nomad_join}"]
   }
 }
-
 acl {
   enabled = ${nomad_bootstrap}
 }
-
 plugin "raw_exec" {
   config {
     enabled = true
   }
 }
-
 autopilot {
     cleanup_dead_servers = true
     last_contact_threshold = "200ms"
@@ -76,7 +71,6 @@ Description=Nomad Server
 Documentation=https://www.nomadproject.io/docs/
 Requires=network-online.target
 After=network-online.target
-
 [Service]
 User=nomad
 Group=nomad
@@ -86,7 +80,6 @@ ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 Restart=on-failure
 LimitNOFILE=65536
-
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -123,7 +116,6 @@ sudo chown -R consul:consul /opt/consul/
 
 sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
 data_dir = "${data_dir}/consul/"
-
 server           = true
 license_path     = "${data_dir}/consul/license.hclic"
 bootstrap_expect = ${server_count}
@@ -131,10 +123,9 @@ advertise_addr   = "$(private_ip)"
 client_addr      = "0.0.0.0"
 ui               = true
 datacenter       = "${datacenter}"
-retry_join       = ["provider=aws tag_key=joestack_join tag_value=${autojoin_value}"]
+retry_join       = ["provider=aws tag_key=nomad_join tag_value=${nomad_join}"]
 retry_max        = 10
 retry_interval   = "15s"
-
 acl = {
   enabled = true
   default_policy = "deny"
@@ -165,7 +156,6 @@ Documentation=https://www.consul.io/
 Requires=network-online.target
 After=network-online.target
 ConditionFileNotEmpty=/etc/consul.d/consul.hcl
-
 [Service]
 User=consul
 Group=consul
@@ -176,7 +166,6 @@ KillMode=process
 KillSignal=SIGTERM
 Restart=on-failure
 LimitNOFILE=65536
-
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -214,15 +203,13 @@ storage "raft" {
     node_id = "${node_name}"
     retry_join {
         leader_tls_servername = "${node_name}.${dns_domain}"
-        auto_join = "provider=aws tag_key=joestack_join tag_value=${autojoin_value}"
+        auto_join = "provider=aws tag_key=nomad_join tag_value=${nomad_join}"
     }
 }
-
 seal "awskms" {
   region     = "${aws_region}"
   kms_key_id = "${kms_key_id}"
 }
-
 ui = true
 disable_mlock = true
 #cluster_addr = "https://$(private_ip):8201"
@@ -230,7 +217,6 @@ disable_mlock = true
 #api_addr = "https://${node_name}.${dns_domain}:8200"
 cluster_addr = "${protocol}://${node_name}.${dns_domain}:8201"
 api_addr = "${protocol}://${node_name}.${dns_domain}:8200"
-
 EOF
 
 sudo tee /etc/vault.d/vault.conf > /dev/null <<ENVVARS
@@ -296,18 +282,14 @@ tutorial() {
   sudo tee ~/readme.txt > /dev/null <<EOF
   01: Initialize the Vault cluster
    vault operator init
-
   create some policies
   create a PKI secrets engine
-
   bootstrap consul
   create some policies
   create a consul secrets engine
-
   bootstrap nomad
   crete some policies
   create a nomad secrets engine
-
   adding consul service registry to Vault
   
   some basic nomad jobs

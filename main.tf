@@ -6,25 +6,20 @@ data "aws_availability_zones" "available" {}
 
 data "aws_ami" "ubuntu" {
   most_recent = true
-
   filter {
     name   = "name"
     values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
   }
-
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-
   owners = ["099720109477"] # Canonical
 }
-
 
 resource "aws_vpc" "hashicorp_vpc" {
   cidr_block           = var.network_address_space
   enable_dns_hostnames = "true"
-
   tags = {
     Name = "${var.name}-vpc"
   }
@@ -37,16 +32,13 @@ resource "aws_internet_gateway" "igw" {
 
 resource "aws_route_table" "rtb" {
   vpc_id = aws_vpc.hashicorp_vpc.id
-
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
-
   tags = {
     Name = "${var.name}-IGW"
   }
-
 }
 
 resource "aws_route_table_association" "nomad-subnet" {
@@ -62,12 +54,14 @@ resource "aws_subnet" "nomad_subnet" {
   cidr_block              = cidrsubnet(var.network_address_space, 8, count.index + 1)
   map_public_ip_on_launch = "true"
   availability_zone       = element(data.aws_availability_zones.available.names, count.index) 
-
   tags = {
     Name = "${var.name}-subnet"
   }
 }
 
+resource "random_id" "gossip" {
+  byte_length = 32
+}
 
 ###############################
 #######      ASG      #########
@@ -115,6 +109,7 @@ resource "aws_security_group_rule" "egress" {
 }
 
 resource "aws_security_group_rule" "nomad-1" {
+  count = var.nomad_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 4646
@@ -124,6 +119,7 @@ resource "aws_security_group_rule" "nomad-1" {
 }
 
 resource "aws_security_group_rule" "nomad-2" {
+  count = var.nomad_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 4646
@@ -133,6 +129,7 @@ resource "aws_security_group_rule" "nomad-2" {
 }
 
 resource "aws_security_group_rule" "vault-1" {
+  count = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8200
@@ -142,6 +139,7 @@ resource "aws_security_group_rule" "vault-1" {
 }
 
 resource "aws_security_group_rule" "vault-2" {
+  count = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8300
@@ -151,6 +149,7 @@ resource "aws_security_group_rule" "vault-2" {
 }
 
 resource "aws_security_group_rule" "vault-3" {
+  count = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8300
@@ -160,6 +159,7 @@ resource "aws_security_group_rule" "vault-3" {
 }
 
 resource "aws_security_group_rule" "vault-4" {
+  count = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8400
@@ -169,6 +169,7 @@ resource "aws_security_group_rule" "vault-4" {
 }
 
 resource "aws_security_group_rule" "consul-1" {
+  count = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8500
@@ -178,6 +179,7 @@ resource "aws_security_group_rule" "consul-1" {
 }
 
 resource "aws_security_group_rule" "consul-2" {
+  count = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8600
@@ -187,6 +189,7 @@ resource "aws_security_group_rule" "consul-2" {
 }
 
 resource "aws_security_group_rule" "consul-3" {
+  count = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8600
@@ -196,6 +199,7 @@ resource "aws_security_group_rule" "consul-3" {
 }
 
 resource "aws_security_group_rule" "consul-4" {
+  count = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 20000
@@ -205,6 +209,7 @@ resource "aws_security_group_rule" "consul-4" {
 }
 
 resource "aws_security_group_rule" "consul-5" {
+  count = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 30000

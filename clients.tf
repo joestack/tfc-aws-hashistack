@@ -9,11 +9,10 @@ data "template_file" "client" {
   ]))}"
   vars = {
     client_count        = var.client_count
-    data_dir            = var.data_dir
     datacenter          = var.datacenter
     region              = var.region
     client              = var.client
-    nomad_join          = var.tag_value
+    auto_join_value     = var.auto_join_value
     node_name           = format("${var.client_name}-%02d", count.index +1)
     nomad_enabled       = var.nomad_enabled
     nomad_version       = var.nomad_version
@@ -49,7 +48,7 @@ resource "aws_instance" "client" {
 
   tags = {
     Name     = format("${var.client_name}-%02d", count.index + 1)
-    nomad_join  = var.tag_value
+    auto_join  = var.auto_join_value
   }
 
   root_block_device {

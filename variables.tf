@@ -1,13 +1,18 @@
-//GLOBAL SETTINGS NmdCnslVlt
+//GLOBAL CLUSTER SETTINGS
 
 variable "aws_region" {
   description = "AWS region"
   default     = "eu-west-1"
 }
 
-variable "dns_domain" {
-  description = "The Route53 Zone to assign DNS records to"
-  default     = "joestack.xyz"
+variable "name" {
+  description = "Environment name to pass to Name tag"
+  default     = "joestack-hashistack"
+}
+
+variable "server_count" {
+  description = "amount of nomad servers (odd number 1,3, max 5)"
+  default     = "3"
 }
 
 variable "instance_type" {
@@ -15,9 +20,22 @@ variable "instance_type" {
   default     = "t2.small"
 }
 
-variable "name" {
-  description = "Environment name to pass to Name tag"
-  default     = "joestack-hashistack"
+variable "server_name" {
+  default = "hc-stack-srv"
+}
+
+variable "root_block_device_size" {
+  default = "80"
+}
+
+variable "auto_join_value" {
+  description = "Server rejoin tag_value to identify servers within a region"
+  default     = "joestack_hashistack_autojoin"
+}
+
+variable "dns_domain" {
+  description = "The Route53 Zone to assign DNS records to"
+  default     = "joestack.xyz"
 }
 
 variable "key_name" {
@@ -35,23 +53,66 @@ variable "network_address_space" {
   default     = "172.16.0.0/16"
 }
 
-variable "server_count" {
-  description = "amount of nomad servers (odd number 1,3, max 5)"
-  default     = "3"
+// GLOBAL CERT SETTINGS
+
+variable "create_root_ca" {
+  description = "Create a self-signed root ca based on hashicorp/terraform-provider-tls"
+  default = "true"
 }
 
-variable "server_name" {
-  default = "hc-stack-srv"
+variable "common_name" {
+  description = "Cert common name"
+  default     = "hashistack"
 }
 
-variable "root_block_device_size" {
-  default = "80"
+variable "organization" {
+  description = "Cert Organaization"
+  default     = "joestack"
 }
 
-variable "data_dir" {
-  description = "Nomad, Consul, Vault config option"
-  default     = "/opt"
+//VAULT SETTINGS
+
+variable "vault_enabled" {
+  default = "true"
 }
+
+variable "vault_version" {
+  description = "i.e. 1.9.3 or 1.9.3+ent"
+  default = "1.9.3"
+}
+
+variable "vault_lic" {
+  description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
+  default          = "NULL"
+}
+
+variable "vault_tls_enabled" {
+  description = "If set to true you need to provide common name, organization, and dns_domain as well"
+  default     = "true"
+}
+
+
+//CONSUL SETTINGS
+
+variable "consul_enabled" {
+  default = "true"
+}
+
+variable "consul_version" {
+  description = "i.e. 1.11.2 or 1.11.2+ent nowadays +ent-1"
+  default = "1.13.3+ent-1"
+}
+
+variable "consul_lic" {
+  description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
+  default = "NULL"
+}
+
+variable "consul_tls_enabled" {
+  description = "If set to true you need to provide common name, organization, and dns_domain as well"
+  default     = "true"
+}
+
 
 
 //NOMAD SETTINGS
@@ -93,62 +154,6 @@ variable "client_count" {
 variable "client_name" {
   default = "nmd-worker"
 }
-variable "tag_key" {
-  description = "Server rejoin tag_key to identify servers within a region"
-  default     = "js_nomad_tag"
-}
-
-variable "tag_value" {
-  description = "Server rejoin tag_value to identify servers within a region"
-  default     = "js_nomad_value"
-}
 
 
 
-//CONSUL SETTINGS
-
-variable "consul_enabled" {
-  default = "true"
-}
-
-variable "consul_version" {
-  description = "i.e. 1.11.2 or 1.11.2+ent"
-  default = "1.11.2+ent"
-}
-
-variable "consul_lic" {
-  description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
-  default = "NULL"
-}
-
-
-//VAULT SETTINGS
-
-variable "vault_enabled" {
-  default = "true"
-}
-
-variable "vault_version" {
-  description = "i.e. 1.9.3 or 1.9.3+ent"
-  default = "1.9.3"
-}
-
-variable "vault_lic" {
-  description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
-  default          = "NULL"
-}
-
-variable "vault_tls_enabled" {
-  description = "If set to true you need to provide common name, organization, and dns_domain as well"
-  default     = "true"
-}
-
-variable "common_name" {
-  description = "Cert common name"
-  default     = "vault"
-}
-
-variable "organization" {
-  description = "Cert Organaization"
-  default     = "joestack"
-}

@@ -17,3 +17,19 @@ output "nomad_client_public_ips" {
 output "fqdn_tls" {
   value = local.fqdn_tls  
 }
+
+# output "fqdn_tls-2" {
+#   value = tostring(local.fqdn_tls)  
+# }
+
+output "fqdn_tls_consul" {
+  value = local.consul_fqdn_tls  
+}
+
+# output "consul_cert_dns" {
+#   value = concat(local.fqdn_tls, local.consul_fqdn_tls)
+  
+# # }
+# output "consul_dns_names" { 
+# value = setunion(local.fqdn_tls, local.consul_fqdn_tls)
+# }

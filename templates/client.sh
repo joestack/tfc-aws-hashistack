@@ -4,7 +4,7 @@
 install_consul_apt() {
 ####################################
 sudo apt-get install -y ${consul_apt}=${consul_version}
-sudo echo ${consul_lic} > ${data_dir}/consul/license.hclic
+sudo echo ${consul_lic} > /opt/consul/license.hclic
 sudo chown -R consul:consul /opt/consul/
 
 sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
@@ -12,10 +12,10 @@ sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
 bind_addr    = "$(private_ip)"
 server       = false
 datacenter   = "${datacenter}"
-data_dir     = "${data_dir}/consul/"
+data_dir     = "/opt/consul/"
 log_level    = "INFO"
-retry_join   = ["provider=aws tag_key=nomad_join tag_value=${nomad_join}"]
-license_path     = "${data_dir}/consul/license.hclic"
+retry_join   = ["provider=aws tag_key=auto_join tag_value=${auto_join_value}"]
+license_path     = "/opt/consul/license.hclic"
 
 service {
   id      = "dns"
@@ -91,7 +91,7 @@ sudo chown -R nomad:nomad /opt/nomad/
 
 sudo tee /etc/nomad.d/nomad.hcl > /dev/null <<EOF
 name            = "${node_name}"
-data_dir        = "${data_dir}/nomad"
+data_dir        = "/opt/nomad"
 enable_debug    = true
 bind_addr       = "0.0.0.0"
 datacenter      = "${datacenter}"
@@ -107,7 +107,7 @@ advertise {
 client {
   enabled = ${client}
   server_join {
-    retry_join = ["provider=aws tag_key=nomad_join tag_value=${nomad_join}"]
+    retry_join = ["provider=aws tag_key=auto_join tag_value=${auto_join_value}"]
   }
   meta {
     "type" = "worker",

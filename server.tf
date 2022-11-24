@@ -1,16 +1,21 @@
 locals {
-  nomad_apt   = length(split("+", var.nomad_version)) == 2 ? "nomad-enterprise" : "nomad"
-  consul_apt  = length(split("+", var.consul_version)) == 2 ? "consul-enterprise" : "consul"
-  vault_apt   = length(split("+", var.vault_version)) == 2 ? "vault-enterprise" : "vault"
-  kms_key_id  = var.vault_enabled ? aws_kms_key.vault.0.key_id : "NULL"
-  cert        = var.vault_tls_enabled ? tls_locally_signed_cert.vault.0.cert_pem : "NULL"
-  key         = var.vault_tls_enabled ? tls_private_key.vault.0.private_key_pem : "NULL"
-  ca_cert     = var.vault_tls_enabled ? tls_private_key.ca.0.public_key_pem : "NULL"
-  protocol    = var.vault_tls_enabled ? "https" : "http"
-  tls_disable = var.vault_tls_enabled ? "false" : "true"
-  #fqdn_server = [for o in aws_instance.server[*] : formatlist("%s.%s", o.tags["Name"], var.dns_domain)] # cyclic dependencies!
-  #fqdn_tls    = [for i in range(1,4) : formatlist("%s%s.%s", "${var.server_name}-0", i, var.dns_domain)] # works but still too static
-  fqdn_tls    = [for i in range(var.server_count) : format("%s-%02d.%s", var.server_name, i +1, var.dns_domain)]
+  vault_apt         = length(split("+", var.vault_version)) == 2 ? "vault-enterprise" : "vault"
+  consul_apt        = length(split("+", var.consul_version)) == 2 ? "consul-enterprise" : "consul"
+  nomad_apt         = length(split("+", var.nomad_version)) == 2 ? "nomad-enterprise" : "nomad"
+  kms_key_id        = var.vault_enabled ? aws_kms_key.vault.0.key_id : "NULL"
+  ca_cert           = var.create_root_ca ? tls_private_key.ca.0.public_key_pem : "NULL"
+  fqdn_tls          = [for i in range(var.server_count) : format("%v-%02d.%v", var.server_name, i +1, var.dns_domain)]
+  vault_cert        = var.vault_tls_enabled ? tls_locally_signed_cert.vault.0.cert_pem : "NULL"
+  vault_key         = var.vault_tls_enabled ? tls_private_key.vault.0.private_key_pem : "NULL"
+  vault_protocol    = var.vault_tls_enabled ? "https" : "http"
+  vault_tls_disable = var.vault_tls_enabled ? "false" : "true"
+  consul_fqdn_tls   = formatlist("server.%s.consul", [var.datacenter])
+  consul_cert       = var.consul_tls_enabled ? tls_locally_signed_cert.consul.0.cert_pem : "NULL"
+  consul_key        = var.consul_tls_enabled ? tls_private_key.consul.0.private_key_pem : "NULL"
+  consul_ca         = var.consul_tls_enabled ? tls_self_signed_cert.ca.0.cert_pem : "NULL"
+  consul_gossip_key = random_id.gossip.b64_std
+  consul_protocol   = var.consul_tls_enabled ? "https" : "http"
+  consul_init_token = uuid()
 }
 
 data "template_file" "server" {
@@ -21,32 +26,38 @@ data "template_file" "server" {
   ]))}"
   vars = {
     server_count        = var.server_count
-    data_dir            = var.data_dir
+    aws_region          = var.aws_region
     datacenter          = var.datacenter
     region              = var.region
-    nomad_join          = var.tag_value
+    auto_join_value     = var.auto_join_value
     node_name           = format("${var.server_name}-%02d", count.index +1)
-    nomad_enabled       = var.nomad_enabled
-    nomad_version       = var.nomad_version
-    nomad_apt           = local.nomad_apt
-    nomad_lic           = var.nomad_lic
-    nomad_bootstrap     = var.nomad_bootstrap
-    consul_enabled      = var.consul_enabled
-    consul_version      = var.consul_version
-    consul_apt          = local.consul_apt
-    consul_lic          = var.consul_lic
+    ca_cert             = local.ca_cert
+    dns_domain          = var.dns_domain
     vault_enabled       = var.vault_enabled
     vault_version       = var.vault_version
     vault_apt           = local.vault_apt
     vault_lic           = var.vault_lic
     kms_key_id          = local.kms_key_id
-    aws_region          = var.aws_region
-    protocol            = local.protocol
-    tls_disable         = local.tls_disable
-    cert                = local.cert 
-    key                 = local.key
-    ca_cert             = local.ca_cert
-    dns_domain          = var.dns_domain
+    vault_protocol      = local.vault_protocol
+    vault_tls_disable   = local.vault_tls_disable
+    vault_cert          = local.vault_cert 
+    vault_key           = local.vault_key
+    consul_enabled      = var.consul_enabled
+    consul_version      = var.consul_version
+    consul_apt          = local.consul_apt
+    consul_lic          = var.consul_lic
+    consul_ca           = local.consul_ca
+    consul_cert         = local.consul_cert
+    consul_key          = local.consul_key
+    consul_gossip_key   = local.consul_gossip_key
+    consul_protocol     = local.consul_protocol
+    consul_env_addr     = upper(local.consul_protocol)
+    consul_init_token   = local.consul_init_token
+    nomad_enabled       = var.nomad_enabled
+    nomad_version       = var.nomad_version
+    nomad_apt           = local.nomad_apt
+    nomad_lic           = var.nomad_lic
+    nomad_bootstrap     = var.nomad_bootstrap
   }
 }
 
@@ -72,7 +83,7 @@ resource "aws_instance" "server" {
 
   tags = {
     Name     = format("${var.server_name}-%02d", count.index + 1)
-    nomad_join  = var.tag_value
+    auto_join  = var.auto_join_value
   }
 
   root_block_device {

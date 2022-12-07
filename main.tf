@@ -7,8 +7,10 @@ data "aws_availability_zones" "available" {}
 data "aws_ami" "ubuntu" {
   most_recent = true
   filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+    name = "name"
+    #values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+    #values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
   filter {
     name   = "virtualization-type"
@@ -16,6 +18,44 @@ data "aws_ami" "ubuntu" {
   }
   owners = ["099720109477"] # Canonical
 }
+
+# data "aws_ami" "rhel" {
+#   most_recent = true
+#   owners      = ["309956199498"] // Red Hat's Account ID
+#   filter {
+#     name   = "name"
+#     values = ["RHEL-8.5*"]
+#   }
+#   filter {
+#     name   = "architecture"
+#     values = ["x86_64"]
+#   }
+#   filter {
+#     name   = "root-device-type"
+#     values = ["ebs"]
+#   }
+#   filter {
+#     name   = "virtualization-type"
+#     values = ["hvm"]
+#   }
+# }
+
+# data "aws_ami" "fedora" {
+#   most_recent = true
+
+#   filter {
+#     name   = "name"
+#     values = ["Fedora*"]
+#   }
+
+#   filter {
+#     name   = "virtualization-type"
+#     values = [ "hvm"]
+#   }
+
+#   owners = ["125523088429"] 
+# }
+
 
 resource "aws_vpc" "hashicorp_vpc" {
   cidr_block           = var.network_address_space
@@ -41,19 +81,19 @@ resource "aws_route_table" "rtb" {
   }
 }
 
-resource "aws_route_table_association" "nomad-subnet" {
+resource "aws_route_table_association" "hcstack-rtb" {
   count          = var.server_count
-  subnet_id      = element(aws_subnet.nomad_subnet.*.id, count.index)
+  subnet_id      = element(aws_subnet.hcstack_subnet.*.id, count.index)
   route_table_id = aws_route_table.rtb.id
 }
 
 
-resource "aws_subnet" "nomad_subnet" {
+resource "aws_subnet" "hcstack_subnet" {
   count                   = var.server_count
   vpc_id                  = aws_vpc.hashicorp_vpc.id
   cidr_block              = cidrsubnet(var.network_address_space, 8, count.index + 1)
   map_public_ip_on_launch = "true"
-  availability_zone       = element(data.aws_availability_zones.available.names, count.index) 
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   tags = {
     Name = "${var.name}-subnet"
   }
@@ -109,7 +149,7 @@ resource "aws_security_group_rule" "egress" {
 }
 
 resource "aws_security_group_rule" "nomad-1" {
-  count = var.nomad_enabled ? 1 : 0
+  count             = var.nomad_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 4646
@@ -119,7 +159,7 @@ resource "aws_security_group_rule" "nomad-1" {
 }
 
 resource "aws_security_group_rule" "nomad-2" {
-  count = var.nomad_enabled ? 1 : 0
+  count             = var.nomad_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 4646
@@ -129,7 +169,7 @@ resource "aws_security_group_rule" "nomad-2" {
 }
 
 resource "aws_security_group_rule" "vault-1" {
-  count = var.vault_enabled ? 1 : 0
+  count             = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8200
@@ -139,7 +179,7 @@ resource "aws_security_group_rule" "vault-1" {
 }
 
 resource "aws_security_group_rule" "vault-2" {
-  count = var.vault_enabled ? 1 : 0
+  count             = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8300
@@ -149,7 +189,7 @@ resource "aws_security_group_rule" "vault-2" {
 }
 
 resource "aws_security_group_rule" "vault-3" {
-  count = var.vault_enabled ? 1 : 0
+  count             = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8300
@@ -159,7 +199,7 @@ resource "aws_security_group_rule" "vault-3" {
 }
 
 resource "aws_security_group_rule" "vault-4" {
-  count = var.vault_enabled ? 1 : 0
+  count             = var.vault_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8400
@@ -169,7 +209,7 @@ resource "aws_security_group_rule" "vault-4" {
 }
 
 resource "aws_security_group_rule" "consul-1" {
-  count = var.consul_enabled ? 1 : 0
+  count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8500
@@ -179,7 +219,7 @@ resource "aws_security_group_rule" "consul-1" {
 }
 
 resource "aws_security_group_rule" "consul-2" {
-  count = var.consul_enabled ? 1 : 0
+  count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8600
@@ -189,7 +229,7 @@ resource "aws_security_group_rule" "consul-2" {
 }
 
 resource "aws_security_group_rule" "consul-3" {
-  count = var.consul_enabled ? 1 : 0
+  count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8600
@@ -199,7 +239,7 @@ resource "aws_security_group_rule" "consul-3" {
 }
 
 resource "aws_security_group_rule" "consul-4" {
-  count = var.consul_enabled ? 1 : 0
+  count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 20000
@@ -209,7 +249,7 @@ resource "aws_security_group_rule" "consul-4" {
 }
 
 resource "aws_security_group_rule" "consul-5" {
-  count = var.consul_enabled ? 1 : 0
+  count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 30000
@@ -217,3 +257,63 @@ resource "aws_security_group_rule" "consul-5" {
   protocol          = "tcp"
   cidr_blocks       = [var.whitelist_ip]
 }
+
+// TFE
+
+resource "aws_security_group" "tfe" {
+  count       = var.terraform_enabled ? 1 : 0
+  name        = "${var.name}-tfe-sg"
+  description = "TFE ASG"
+  vpc_id      = aws_vpc.hashicorp_vpc.id
+}
+
+resource "aws_security_group_rule" "tfe-ssh" {
+  count             = var.terraform_enabled ? 1 : 0
+  security_group_id = aws_security_group.tfe[count.index].id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = [var.whitelist_ip]
+}
+
+resource "aws_security_group_rule" "tfe-http" {
+  count             = var.terraform_enabled ? 1 : 0
+  security_group_id = aws_security_group.tfe[count.index].id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = [var.whitelist_ip]
+}
+
+resource "aws_security_group_rule" "tfe-https" {
+  count             = var.terraform_enabled ? 1 : 0
+  security_group_id = aws_security_group.tfe[count.index].id
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = [var.whitelist_ip]
+}
+
+resource "aws_security_group_rule" "tfe-admin" {
+  count             = var.terraform_enabled ? 1 : 0
+  security_group_id = aws_security_group.tfe[count.index].id
+  type              = "ingress"
+  from_port         = 8800
+  to_port           = 8800
+  protocol          = "tcp"
+  cidr_blocks       = [var.whitelist_ip]
+}
+
+resource "aws_security_group_rule" "tfe-egress" {
+  count             = var.terraform_enabled ? 1 : 0
+  security_group_id = aws_security_group.tfe[count.index].id
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+

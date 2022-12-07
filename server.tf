@@ -4,7 +4,7 @@ locals {
   nomad_apt         = length(split("+", var.nomad_version)) == 2 ? "nomad-enterprise" : "nomad"
   kms_key_id        = var.vault_enabled ? aws_kms_key.vault.0.key_id : "NULL"
   ca_cert           = var.create_root_ca ? tls_private_key.ca.0.public_key_pem : "NULL"
-  fqdn_tls          = [for i in range(var.server_count) : format("%v-%02d.%v", var.server_name, i +1, var.dns_domain)]
+  fqdn_tls          = [for i in range(var.server_count) : format("%v-%02d.%v", var.server_name, i + 1, var.dns_domain)]
   vault_cert        = var.vault_tls_enabled ? tls_locally_signed_cert.vault.0.cert_pem : "NULL"
   vault_key         = var.vault_tls_enabled ? tls_private_key.vault.0.private_key_pem : "NULL"
   vault_protocol    = var.vault_tls_enabled ? "https" : "http"
@@ -16,53 +16,55 @@ locals {
   consul_gossip_key = random_id.gossip.b64_std
   consul_protocol   = var.consul_tls_enabled ? "https" : "http"
   consul_init_token = uuid()
+  //TEST
+  #server_count = var.server_count * (var.vault_enabled ? "1" : "0") * (var.consul_enabled ? "1" : "0") * (var.nomad_enabled ? "1" : "0")
 }
 
 data "template_file" "server" {
   count = var.server_count
-  template = "${join("\n", tolist([
+  template = (join("\n", tolist([
     file("${path.root}/templates/base.sh"),
     file("${path.root}/templates/server.sh")
-  ]))}"
+  ])))
   vars = {
-    server_count        = var.server_count
-    aws_region          = var.aws_region
-    datacenter          = var.datacenter
-    region              = var.region
-    auto_join_value     = var.auto_join_value
-    node_name           = format("${var.server_name}-%02d", count.index +1)
-    ca_cert             = local.ca_cert
-    dns_domain          = var.dns_domain
-    vault_enabled       = var.vault_enabled
-    vault_version       = var.vault_version
-    vault_apt           = local.vault_apt
-    vault_lic           = var.vault_lic
-    kms_key_id          = local.kms_key_id
-    vault_protocol      = local.vault_protocol
-    vault_tls_disable   = local.vault_tls_disable
-    vault_cert          = local.vault_cert 
-    vault_key           = local.vault_key
-    consul_enabled      = var.consul_enabled
-    consul_version      = var.consul_version
-    consul_apt          = local.consul_apt
-    consul_lic          = var.consul_lic
-    consul_ca           = local.consul_ca
-    consul_cert         = local.consul_cert
-    consul_key          = local.consul_key
-    consul_gossip_key   = local.consul_gossip_key
-    consul_protocol     = local.consul_protocol
-    consul_env_addr     = upper(local.consul_protocol)
-    consul_init_token   = local.consul_init_token
-    nomad_enabled       = var.nomad_enabled
-    nomad_version       = var.nomad_version
-    nomad_apt           = local.nomad_apt
-    nomad_lic           = var.nomad_lic
-    nomad_bootstrap     = var.nomad_bootstrap
+    server_count      = var.server_count
+    aws_region        = var.aws_region
+    datacenter        = var.datacenter
+    region            = var.region
+    auto_join_value   = var.auto_join_value
+    node_name         = format("${var.server_name}-%02d", count.index + 1)
+    ca_cert           = local.ca_cert
+    dns_domain        = var.dns_domain
+    vault_enabled     = var.vault_enabled
+    vault_version     = var.vault_version
+    vault_apt         = local.vault_apt
+    vault_lic         = var.vault_lic
+    kms_key_id        = local.kms_key_id
+    vault_protocol    = local.vault_protocol
+    vault_tls_disable = local.vault_tls_disable
+    vault_cert        = local.vault_cert
+    vault_key         = local.vault_key
+    consul_enabled    = var.consul_enabled
+    consul_version    = var.consul_version
+    consul_apt        = local.consul_apt
+    consul_lic        = var.consul_lic
+    consul_ca         = local.consul_ca
+    consul_cert       = local.consul_cert
+    consul_key        = local.consul_key
+    consul_gossip_key = local.consul_gossip_key
+    consul_protocol   = local.consul_protocol
+    consul_env_addr   = upper(local.consul_protocol)
+    consul_init_token = local.consul_init_token
+    nomad_enabled     = var.nomad_enabled
+    nomad_version     = var.nomad_version
+    nomad_apt         = local.nomad_apt
+    nomad_lic         = var.nomad_lic
+    nomad_bootstrap   = var.nomad_bootstrap
   }
 }
 
 data "template_cloudinit_config" "server" {
-  count = var.server_count
+  count         = var.server_count
   gzip          = true
   base64_encode = true
   part {
@@ -75,15 +77,15 @@ resource "aws_instance" "server" {
   count                       = var.server_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = element(aws_subnet.nomad_subnet.*.id, count.index)
+  subnet_id                   = element(aws_subnet.hcstack_subnet.*.id, count.index)
   associate_public_ip_address = "true"
   vpc_security_group_ids      = [aws_security_group.primary.id]
   key_name                    = var.key_name
   iam_instance_profile        = aws_iam_instance_profile.hc-stack-server.name
 
   tags = {
-    Name     = format("${var.server_name}-%02d", count.index + 1)
-    auto_join  = var.auto_join_value
+    Name      = format("${var.server_name}-%02d", count.index + 1)
+    auto_join = var.auto_join_value
   }
 
   root_block_device {

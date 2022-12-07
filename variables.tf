@@ -35,17 +35,17 @@ variable "auto_join_value" {
 
 variable "dns_domain" {
   description = "The Route53 Zone to assign DNS records to"
-  default     = "joestack.xyz"
+  default     = "hashidemos.io"
 }
 
 variable "key_name" {
-  description = "SSH key to connect to EC2 instances. Use the one that is already uploaded into your AWS region or add one to main.tf"
+  description = "SSH key to connect to EC2 instances. Use the one that is already uploaded into your AWS region or add one here"
   default     = "joestack"
 }
 
 variable "whitelist_ip" {
   description = "opening up the ingress part of the ASGs"
-  default = "0.0.0.0/0"
+  default     = "0.0.0.0/0"
 }
 
 variable "network_address_space" {
@@ -57,7 +57,7 @@ variable "network_address_space" {
 
 variable "create_root_ca" {
   description = "Create a self-signed root ca based on hashicorp/terraform-provider-tls"
-  default = "true"
+  default     = "true"
 }
 
 variable "common_name" {
@@ -78,12 +78,12 @@ variable "vault_enabled" {
 
 variable "vault_version" {
   description = "i.e. 1.9.3 or 1.9.3+ent"
-  default = "1.9.3"
+  default     = "1.9.3"
 }
 
 variable "vault_lic" {
   description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
-  default          = "NULL"
+  default     = "NULL"
 }
 
 variable "vault_tls_enabled" {
@@ -100,12 +100,12 @@ variable "consul_enabled" {
 
 variable "consul_version" {
   description = "i.e. 1.11.2 or 1.11.2+ent nowadays +ent-1"
-  default = "1.13.3+ent-1"
+  default     = "1.13.3+ent-1"
 }
 
 variable "consul_lic" {
   description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
-  default = "NULL"
+  default     = "NULL"
 }
 
 variable "consul_tls_enabled" {
@@ -113,7 +113,7 @@ variable "consul_tls_enabled" {
   default     = "true"
 }
 
-
+//variable "datatenter" is used from the NOMAD SETTINGS block
 
 //NOMAD SETTINGS
 
@@ -123,12 +123,12 @@ variable "nomad_enabled" {
 
 variable "nomad_version" {
   description = "i.e. 1.2.5 or 1.2.5+ent"
-  default = "1.2.5+ent"
+  default     = "1.2.5+ent"
 }
 
 variable "nomad_lic" {
   description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
-  default = "NULL"
+  default     = "NULL"
 }
 
 variable "nomad_bootstrap" {
@@ -156,4 +156,39 @@ variable "client_name" {
 }
 
 
+// TERRAFORM
 
+variable "terraform_enabled" {
+  default = "false"
+}
+
+variable "tfe_lic" {
+  description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
+  default     = "NULL"
+}
+variable "tfe_auth_password" {
+  default = "NULL"
+}
+
+variable "tfe_enc_password" {
+  description = "If not specified, a random one will be used and you won't be able to restore from a backup"
+}
+
+variable "tfe_hostname" {
+  default = "tfe-joestack"
+}
+
+variable "tfe_cert_provider" {
+  description = "TLS cert option [self-signed,certbot,tf-tls-provider]"
+  default     = "certbot"
+}
+
+variable "tfe_cert_email" {
+  description = "mandatory in case of using certbot"
+  default     = "joern@hashicorp.com"
+}
+
+variable "tfe_auto_install" {
+  description = "run the tfe install.sh directly by the user-data script. You can run is manually if set to false"
+  default     = "true"
+}

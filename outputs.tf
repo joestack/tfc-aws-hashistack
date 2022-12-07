@@ -14,22 +14,22 @@ output "nomad_client_public_ips" {
   value = aws_instance.client[*].public_ip
 }
 
-output "fqdn_tls" {
-  value = local.fqdn_tls  
-}
-
-# output "fqdn_tls-2" {
-#   value = tostring(local.fqdn_tls)  
+# output "fqdn_tls" {
+#   value = local.fqdn_tls
 # }
 
-output "fqdn_tls_consul" {
-  value = local.consul_fqdn_tls  
+# output "fqdn_tls_consul" {
+#   value = local.consul_fqdn_tls
+# }
+
+output "tfe_pub_ip" {
+  value = aws_instance.tfe[*].public_ip
 }
 
-# output "consul_cert_dns" {
-#   value = concat(local.fqdn_tls, local.consul_fqdn_tls)
-  
-# # }
-# output "consul_dns_names" { 
-# value = setunion(local.fqdn_tls, local.consul_fqdn_tls)
+output "tfe_prv_ip" {
+  value = aws_instance.tfe[*].private_ip
+}
+
+# output "local_server_count" {
+#   value = local.server_count
 # }

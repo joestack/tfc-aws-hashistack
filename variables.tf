@@ -73,7 +73,7 @@ variable "organization" {
 //VAULT SETTINGS
 
 variable "vault_enabled" {
-  default = "true"
+  default = "false"
 }
 
 variable "vault_version" {
@@ -95,7 +95,7 @@ variable "vault_tls_enabled" {
 //CONSUL SETTINGS
 
 variable "consul_enabled" {
-  default = "true"
+  default = "false"
 }
 
 variable "consul_version" {
@@ -118,7 +118,7 @@ variable "consul_tls_enabled" {
 //NOMAD SETTINGS
 
 variable "nomad_enabled" {
-  default = "true"
+  default = "false"
 }
 
 variable "nomad_version" {

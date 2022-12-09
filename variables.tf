@@ -1,22 +1,22 @@
 //GLOBAL CLUSTER SETTINGS
 
 variable "aws_region" {
-  description = "AWS region"
+  description = "The AWS region to be used"
   default     = "eu-west-1"
 }
 
 variable "name" {
-  description = "Environment name to pass to Name tag"
+  description = "Environment name to be used as Tag"
   default     = "joestack-hashistack"
 }
 
 variable "server_count" {
-  description = "amount of nomad servers (odd number 1,3, max 5)"
+  description = "Amount of cluster instances (odd number 1,3, max 5)"
   default     = "3"
 }
 
 variable "instance_type" {
-  description = "type of EC2 instance to provision (Server and Client Nodes)."
+  description = "Type of EC2 cluster instance"
   default     = "t2.small"
 }
 
@@ -29,7 +29,7 @@ variable "root_block_device_size" {
 }
 
 variable "auto_join_value" {
-  description = "Server rejoin tag_value to identify servers within a region"
+  description = "Server rejoin tag_value to identify cluster instances"
   default     = "joestack_hashistack_autojoin"
 }
 
@@ -39,12 +39,12 @@ variable "dns_domain" {
 }
 
 variable "key_name" {
-  description = "SSH key to connect to EC2 instances. Use the one that is already uploaded into your AWS region or add one here"
+  description = "SSH key to be used to access the instances. Use the one that is already uploaded into your AWS region or add one here"
   default     = "joestack"
 }
 
 variable "whitelist_ip" {
-  description = "opening up the ingress part of the ASGs"
+  description = "The allowed ingress IP CIDR assigned to the ASGs"
   default     = "0.0.0.0/0"
 }
 

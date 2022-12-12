@@ -33,3 +33,16 @@ output "tfe_prv_ip" {
 # output "local_server_count" {
 #   value = local.server_count
 # }
+
+output "tfe_enc_password" {
+  value = local.tfe_enc_password
+}
+
+output "tfe_auth_passord" {
+  value = local.tfe_auth_password
+}
+
+output "server_count" {
+  value = local.server_count
+}
+

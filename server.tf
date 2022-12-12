@@ -4,7 +4,7 @@ locals {
   nomad_apt         = length(split("+", var.nomad_version)) == 2 ? "nomad-enterprise" : "nomad"
   kms_key_id        = var.vault_enabled ? aws_kms_key.vault.0.key_id : "NULL"
   ca_cert           = var.create_root_ca ? tls_private_key.ca.0.public_key_pem : "NULL"
-  fqdn_tls          = [for i in range(var.server_count) : format("%v-%02d.%v", var.server_name, i + 1, var.dns_domain)]
+  fqdn_tls          = [for i in range(local.server_count) : format("%v-%02d.%v", var.server_name, i + 1, var.dns_domain)]
   vault_cert        = var.vault_tls_enabled ? tls_locally_signed_cert.vault.0.cert_pem : "NULL"
   vault_key         = var.vault_tls_enabled ? tls_private_key.vault.0.private_key_pem : "NULL"
   vault_protocol    = var.vault_tls_enabled ? "https" : "http"
@@ -18,10 +18,11 @@ locals {
   consul_init_token = uuid()
   //TEST
   #server_count = var.server_count * (var.vault_enabled ? "1" : "0") * (var.consul_enabled ? "1" : "0") * (var.nomad_enabled ? "1" : "0")
+  server_count = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? var.server_count : 0
 }
 
 data "template_file" "server" {
-  count = var.server_count
+  count = local.server_count
   template = (join("\n", tolist([
     file("${path.root}/templates/base.sh"),
     file("${path.root}/templates/server.sh")
@@ -64,7 +65,7 @@ data "template_file" "server" {
 }
 
 data "template_cloudinit_config" "server" {
-  count         = var.server_count
+  count         = local.server_count
   gzip          = true
   base64_encode = true
   part {
@@ -74,7 +75,7 @@ data "template_cloudinit_config" "server" {
 }
 
 resource "aws_instance" "server" {
-  count                       = var.server_count
+  count                       = local.server_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
   subnet_id                   = element(aws_subnet.hcstack_subnet.*.id, count.index)

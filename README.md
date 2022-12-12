@@ -55,9 +55,9 @@ Main focus on this repository is about simplicity and readability. It is based o
 | client_count | (optional) The amount of Nomad clients | 3 |
 | client_name | (optional) Hostname prefix of Nomad clients | nmd-worker |
 | terraform_enabled | Create a Terraform Enterprise instance [true, false] | false |
-| tfe_lic | (required) The Terraform Enterprise license file | NULL |
-| tfe_auth_password | (required) The initial authentication password | none |
-| tfe_enc_password | (required) The encryption key to be used to encrypt state and db | none |
+| tfe_lic | (required) The Terraform Enterprise license file. | NULL |
+| tfe_auth_password | (optional) The initial authentication password. Will be created if NULL | NULL |
+| tfe_enc_password | (optional) The encryption key to be used to encrypt state and db. Will be created if NULL | NULL |
 | tfe_hostname | (required) The hostname of the TFE instance | tfe-joestack |
 | tfe_cert_provider | (required) TLS Certificate options [self-signed, certbot, tf-tls-provider] | certbot |
 | tfe_cert_email | (required) Certbot email address | none |

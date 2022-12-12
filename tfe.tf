@@ -1,4 +1,7 @@
-
+locals {
+  tfe_enc_password  = var.tfe_enc_password != "NULL" ? var.tfe_enc_password : random_id.tfe_enc_password.id
+  tfe_auth_password = var.tfe_auth_password != "NULL" ? var.tfe_auth_password : random_pet.tfe_auth_password.id
+}
 
 
 data "template_file" "tfe" {
@@ -11,12 +14,12 @@ data "template_file" "tfe" {
     node_name         = var.tfe_hostname
     tfe_fqdn          = "${var.tfe_hostname}.${var.dns_domain}"
     tfe_lic           = var.tfe_lic
-    tfe_auth_password = var.tfe_auth_password
+    tfe_auth_password = local.tfe_auth_password
     tfe_tls_cert      = tls_locally_signed_cert.tfe.0.cert_pem
     tfe_tls_key       = tls_private_key.tfe.0.private_key_pem
     tfe_tls_ca        = tls_self_signed_cert.ca.0.cert_pem
     tfe_disk_path     = "/opt/tfe"
-    tfe_enc_password  = var.tfe_enc_password
+    tfe_enc_password  = local.tfe_enc_password
     tfe_cert_provider = var.tfe_cert_provider
     tfe_cert_email    = var.tfe_cert_email
     tfe_auto_install  = var.tfe_auto_install
@@ -36,8 +39,8 @@ data "template_cloudinit_config" "tfe" {
 
 
 resource "aws_instance" "tfe" {
-  count = var.terraform_enabled ? 1 : 0
-  ami = data.aws_ami.ubuntu.id
+  count                       = var.terraform_enabled ? 1 : 0
+  ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.medium"
   subnet_id                   = element(aws_subnet.hcstack_subnet.*.id, count.index)
   associate_public_ip_address = "true"
@@ -62,4 +65,13 @@ resource "aws_instance" "tfe" {
 
   user_data = element(data.template_cloudinit_config.tfe.*.rendered, count.index)
 
+}
+
+resource "random_id" "tfe_enc_password" {
+  #count = var.tfe_enc_password == "NULL" ? 1 : 0
+  byte_length = 16
+}
+
+resource "random_pet" "tfe_auth_password" {
+  length = 2
 }

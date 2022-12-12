@@ -167,11 +167,13 @@ variable "tfe_lic" {
   default     = "NULL"
 }
 variable "tfe_auth_password" {
-  default = "NULL"
+  description = "The initial password to access the TFE app on port 8800. If not specified, a random one will be created"
+  default     = "NULL"
 }
 
 variable "tfe_enc_password" {
-  description = "If not specified, a random one will be used and you won't be able to restore from a backup"
+  description = "If not specified, a random one will be created"
+  default     = "NULL"
 }
 
 variable "tfe_hostname" {

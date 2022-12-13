@@ -97,3 +97,12 @@ resource "aws_instance" "server" {
 
   user_data = element(data.template_cloudinit_config.server.*.rendered, count.index)
 }
+
+resource "aws_route53_record" "server" {
+  count   = var.server_count
+  zone_id = data.aws_route53_zone.selected.zone_id
+  name    = lookup(aws_instance.server.*.tags[count.index], "Name")
+  type    = "A"
+  ttl     = "300"
+  records = [element(aws_instance.server.*.public_ip, count.index)]
+}

@@ -159,32 +159,3 @@ resource "tls_locally_signed_cert" "tfe" {
     "client_auth",
   ]
 }
-
-
-##
-## TODO: ADD COUNT
-
-data "aws_route53_zone" "selected" {
-  name         = "${var.dns_domain}."
-  private_zone = false
-}
-
-
-resource "aws_route53_record" "server" {
-  count   = var.server_count
-  zone_id = data.aws_route53_zone.selected.zone_id
-  name    = lookup(aws_instance.server.*.tags[count.index], "Name")
-  type    = "A"
-  ttl     = "300"
-  records = [element(aws_instance.server.*.public_ip, count.index)]
-}
-
-resource "aws_route53_record" "tfe" {
-  count   = var.terraform_enabled ? 1 : 0
-  zone_id = data.aws_route53_zone.selected.zone_id
-  name    = lookup(aws_instance.tfe.*.tags[count.index], "Name")
-  #name    = "tfe.${var.dns_domain}"
-  type    = "A"
-  ttl     = "300"
-  records = [element(aws_instance.tfe.*.public_ip, count.index)]
-}

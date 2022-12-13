@@ -75,3 +75,13 @@ resource "random_id" "tfe_enc_password" {
 resource "random_pet" "tfe_auth_password" {
   length = 2
 }
+
+resource "aws_route53_record" "tfe" {
+  count   = var.terraform_enabled ? 1 : 0
+  zone_id = data.aws_route53_zone.selected.zone_id
+  name    = lookup(aws_instance.tfe.*.tags[count.index], "Name")
+  #name    = "tfe.${var.dns_domain}"
+  type    = "A"
+  ttl     = "300"
+  records = [element(aws_instance.tfe.*.public_ip, count.index)]
+}

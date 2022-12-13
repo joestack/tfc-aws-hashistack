@@ -16,7 +16,7 @@ locals {
   consul_gossip_key = random_id.gossip.b64_std
   consul_protocol   = var.consul_tls_enabled ? "https" : "http"
   #consul_init_token = uuid()
-  consul_init_token = random_uuid.consul_init_token
+  consul_init_token = random_uuid.consul_init_token.id
   server_count      = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? var.server_count : 0
 }
 

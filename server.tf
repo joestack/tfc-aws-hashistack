@@ -15,7 +15,8 @@ locals {
   consul_ca         = var.consul_tls_enabled ? tls_self_signed_cert.ca.0.cert_pem : "NULL"
   consul_gossip_key = random_id.gossip.b64_std
   consul_protocol   = var.consul_tls_enabled ? "https" : "http"
-  consul_init_token = uuid()
+  #consul_init_token = uuid()
+  consul_init_token = random_uuid.consul_init_token
   server_count      = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? var.server_count : 0
 }
 
@@ -73,11 +74,11 @@ data "template_cloudinit_config" "server" {
 }
 
 resource "aws_instance" "server" {
-  lifecycle {
-    ignore_changes = [
-      user_data
-    ]
-  }
+  # lifecycle {
+  #   ignore_changes = [
+  #     user_data
+  #   ]
+  # }
   count                       = local.server_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
@@ -99,6 +100,13 @@ resource "aws_instance" "server" {
   }
 
   user_data = element(data.template_cloudinit_config.server.*.rendered, count.index)
+}
+
+resource "random_id" "gossip" {
+  byte_length = 32
+}
+
+resource "random_uuid" "consul_init_token" {
 }
 
 resource "aws_route53_record" "server" {

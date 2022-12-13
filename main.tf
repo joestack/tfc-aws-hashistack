@@ -104,10 +104,6 @@ resource "aws_subnet" "hcstack_subnet" {
   }
 }
 
-resource "random_id" "gossip" {
-  byte_length = 32
-}
-
 ###############################
 #######      ASG      #########
 

@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Resources
+// KMS Resources for Vault auto-unsealing
 
 resource "aws_kms_key" "vault" {
   count                   = var.vault_enabled ? 1 : 0

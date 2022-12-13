@@ -62,3 +62,7 @@ Main focus on this repository is about simplicity and readability. It is based o
 | tfe_cert_provider | (required) TLS Certificate options [self-signed, certbot, tf-tls-provider] | certbot |
 | tfe_cert_email | (required) Certbot email address | none |
 | tfe_auto_install | (optional) Automatically install TFE on instance [true, false] | true |
+
+---
+### Take a look at the **outputs** to find the IP addresses of the instances or the initial password to access Terraform.
+---

@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------
-// Resources
+// IAM and Policy Resources
 
 ## Vault Server IAM Config
 resource "aws_iam_instance_profile" "hc-stack-server" {

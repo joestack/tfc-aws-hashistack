@@ -20,6 +20,11 @@ locals {
 }
 
 data "template_file" "server" {
+  lifecycle {
+    ignore_changes = [
+      all
+    ]
+  }
   count = local.server_count
   template = (join("\n", tolist([
     file("${path.root}/templates/base.sh"),

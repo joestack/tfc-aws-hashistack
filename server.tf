@@ -75,7 +75,7 @@ data "template_cloudinit_config" "server" {
 resource "aws_instance" "server" {
   lifecycle {
     ignore_changes = [
-      all
+      user_data
     ]
   }
   count                       = local.server_count

@@ -16,15 +16,10 @@ locals {
   consul_gossip_key = random_id.gossip.b64_std
   consul_protocol   = var.consul_tls_enabled ? "https" : "http"
   consul_init_token = uuid()
-  server_count = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? var.server_count : 0
+  server_count      = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? var.server_count : 0
 }
 
 data "template_file" "server" {
-  lifecycle {
-    ignore_changes = [
-      all
-    ]
-  }
   count = local.server_count
   template = (join("\n", tolist([
     file("${path.root}/templates/base.sh"),
@@ -78,6 +73,11 @@ data "template_cloudinit_config" "server" {
 }
 
 resource "aws_instance" "server" {
+  lifecycle {
+    ignore_changes = [
+      all
+    ]
+  }
   count                       = local.server_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type

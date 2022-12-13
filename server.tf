@@ -26,7 +26,7 @@ data "template_file" "server" {
     file("${path.root}/templates/server.sh")
   ])))
   vars = {
-    server_count      = var.server_count
+    server_count      = local.server_count
     aws_region        = var.aws_region
     datacenter        = var.datacenter
     region            = var.region
@@ -97,7 +97,7 @@ resource "aws_instance" "server" {
 }
 
 resource "aws_route53_record" "server" {
-  count   = var.server_count
+  count   = local.server_count
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = lookup(aws_instance.server.*.tags[count.index], "Name")
   type    = "A"

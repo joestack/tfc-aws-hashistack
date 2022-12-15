@@ -1,6 +1,12 @@
 provider "aws" {
   region = var.aws_region
 }
+resource "aws_key_pair" "aws-hashistack-key" {
+  count      = var.key_name != "aws-hashistack-key" ? 0 : 1
+  key_name   = "aws-hashistack-key"
+  public_key = var.aws_hashistack_key
+}
+
 
 data "aws_availability_zones" "available" {}
 

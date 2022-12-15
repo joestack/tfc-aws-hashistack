@@ -39,8 +39,15 @@ variable "dns_domain" {
 }
 
 variable "key_name" {
-  description = "SSH key to be used to access the instances. Use the one that is already uploaded into your AWS region or add one here"
-  default     = "joestack"
+  description = "SSH key name to be used to access any instances. Use the one that already exist in your AWS region or keep the default and assign the pub key to aws_hashistack_key variable"
+  default     = "aws-hashistack-key"
+  #default     = "joestack"
+}
+
+variable "aws_hashistack_key" {
+  description = "The public part of the SSH key to access any instance"
+  default     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvOp4xxCMWtSfMkO73Xv29aavZlPKFdJ3kI9CpY1Dnl0Q945TybNcFQuZ53RRvw7ccOx0CctuzDRwW3FX9rdD96htu2uoZXeeY0tB2gb3md/LpKw3I+PRJXIHwwbfpQK8rxXlmDIiPR8P7frNs/Y3z2dYxlmlE+OB4Y3hbF10vBxJUECX2AmTNDb+IBS1APJc/Sw+04aEwh2kiv5tfqhM+1bjhKxBzY/h5+H7jV0psH/TeAkr7yvY7KVwrqad+MXGvMfAwp0ziWh7BWMUeOHsCIJx9tUlLPL/5HvjeFniALXVIIrGo/kz1SI0Q5Na60iAETi1t8jlWOOPOWLe28JUL joern@Think-X1"
+  #default     = "NULL"
 }
 
 variable "whitelist_ip" {

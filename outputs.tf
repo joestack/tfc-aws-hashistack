@@ -46,3 +46,10 @@ output "server_count" {
   value = local.server_count
 }
 
+output "tfe_enc_password_2" {
+  value = var.terraform_enabled ? local.tfe_enc_password : ""
+}
+
+output "tfe_auth_passord_2" {
+  value = var.terraform_enabled ? local.tfe_auth_password : ""
+}

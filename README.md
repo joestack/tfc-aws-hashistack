@@ -15,11 +15,12 @@ Terraform: mounted disk, certbot TLS
 
 Main focus on this repository is about simplicity and readability. It is based on Terraform IaC only. The TLS certs are provided by hashicorp/terraform-provider-tls for the cluster. The TFE TLS certificate can be self-signed, tf-provider-tls, or certbot (Letsencrypt). The instances/hosts are configured through "user-data" scripts (bash) during the initial built-time. The "user-data" scripts are dynamically rendered (hashicorp/terraform-provider-template) based on variables.tf.
 
-
-
+---
+### Take a look at the **outputs** to find the IP addresses of the instances or the initial password to access Terraform.
 ---
 
-## Variable Argument Reference:
+
+### Variable Argument Reference:
 
 | Key | Description | Default |
 | - | :- | :- |
@@ -33,7 +34,7 @@ Main focus on this repository is about simplicity and readability. It is based o
 | auto_join_value | (optional) Server rejoin tag_value to identify cluster instances | joestack_hashistack_autojoin |
 | dns_domain | (required) The Route53 Zone to assign DNS records to | hashidemos.io |
 | key_name | (optional) SSH key_name to be used to access the instances | aws-hashistack-key |
-| aws_hashistack_key | (required) The SSH public key to access any instance | NULL |
+| aws_hashistack_key | (required if key_name default is not changed) The SSH public key to access any instance | NULL |
 | whitelist_ip | (optional) The allowed ingress IP CIDR assigned to the ASGs | 0.0.0.0/0 |
 | network_address_space | (optional) The CIDR to be used for the instances | 172.16.0.0/16 |
 | create_root_ca | (optional) Create a self-signed root ca based on hashicorp/terraform-provider-tls | true |
@@ -69,8 +70,3 @@ Main focus on this repository is about simplicity and readability. It is based o
 | tfe_cert_email | (required if certbot) Certbot email address | none |
 | tfe_auto_install | (optional) Automatically install TFE on instance [true, false] | true |
 
----
-
-### Take a look at the **outputs** to find the IP addresses of the instances or the initial password to access Terraform.
-
----

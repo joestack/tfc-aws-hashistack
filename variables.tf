@@ -2,12 +2,12 @@
 
 variable "aws_region" {
   description = "The AWS region to be used"
-  default     = "eu-west-1"
+  #default     = "eu-west-1"
 }
 
 variable "name" {
   description = "Environment name to be used as Tag"
-  default     = "joestack-hashistack"
+  #default     = "joestack-hashistack"
 }
 
 variable "server_count" {
@@ -35,7 +35,7 @@ variable "auto_join_value" {
 
 variable "dns_domain" {
   description = "The Route53 Zone to assign DNS records to"
-  default     = "hashidemos.io"
+  #default     = "hashidemos.io"
 }
 
 variable "key_name" {
@@ -192,7 +192,7 @@ variable "tfe_cert_provider" {
 
 variable "tfe_cert_email" {
   description = "mandatory in case of using certbot"
-  default     = "joern@hashicorp.com"
+  #default     = "joern@hashicorp.com"
 }
 
 variable "tfe_auto_install" {

@@ -25,14 +25,14 @@ Main focus on this repository is about simplicity and readability. It is based o
 | Key | Description | Default |
 | - | :- | :- |
 | **Global Settings** 
-| aws_region | (required) The AWS region to be used | eu-west-1 |
+| aws_region | (required) The AWS region to be used | none |
 | name | (required) Environment name to be used as Tag  | none |
 | server_count | (optional) Amount of cluster instances (odd number 1,3, max 5) | 3 |
 | instance_type | (optional) Type of EC2 cluster instance | t2.small |
 | server_name | (optional) Hostname prefix of the cluster instances | hc-stack-srv |
 | root_block_device_size | (optional) Size of the root filesystem | 80 |
 | auto_join_value | (optional) Server rejoin tag_value to identify cluster instances | joestack_hashistack_autojoin |
-| dns_domain | (required) The Route53 Zone to assign DNS records to | hashidemos.io |
+| dns_domain | (required) The Route53 Zone to assign DNS records to | none |
 | key_name | (optional) SSH key_name to be used to access the instances | aws-hashistack-key |
 | aws_hashistack_key | (required if key_name default is not changed) The SSH public key to access any instance | NULL |
 | whitelist_ip | (optional) The allowed ingress IP CIDR assigned to the ASGs | 0.0.0.0/0 |

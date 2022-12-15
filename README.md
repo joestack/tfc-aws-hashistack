@@ -32,7 +32,8 @@ Main focus on this repository is about simplicity and readability. It is based o
 | root_block_device_size | (optional) Size of the root filesystem | 80 |
 | auto_join_value | (optional) Server rejoin tag_value to identify cluster instances | joestack_hashistack_autojoin |
 | dns_domain | (required) The Route53 Zone to assign DNS records to | hashidemos.io |
-| key_name | (required) SSH key to be used to access the instances | joestack |
+| key_name | (optional) SSH key_name to be used to access the instances | aws-hashistack-key |
+| aws_hashistack_key | (required) The SSH public key to access any instance | NULL |
 | whitelist_ip | (optional) The allowed ingress IP CIDR assigned to the ASGs | 0.0.0.0/0 |
 | network_address_space | (optional) The CIDR to be used for the instances | 172.16.0.0/16 |
 | create_root_ca | (optional) Create a self-signed root ca based on hashicorp/terraform-provider-tls | true |

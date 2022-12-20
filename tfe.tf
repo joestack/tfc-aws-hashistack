@@ -1,8 +1,9 @@
+# locals are used to add a little more magic, dynamic, or circumstances to the vars 
+# used by the template data source to render the user_data scripts
 locals {
   tfe_enc_password  = var.tfe_enc_password != "NULL" ? var.tfe_enc_password : random_id.tfe_enc_password.id
   tfe_auth_password = var.tfe_auth_password != "NULL" ? var.tfe_auth_password : random_pet.tfe_auth_password.id
 }
-
 
 data "template_file" "tfe" {
   count = var.terraform_enabled ? 1 : 0
@@ -36,8 +37,6 @@ data "template_cloudinit_config" "tfe" {
   }
 }
 
-
-
 resource "aws_instance" "tfe" {
   count                       = var.terraform_enabled ? 1 : 0
   ami                         = data.aws_ami.ubuntu.id
@@ -57,18 +56,11 @@ resource "aws_instance" "tfe" {
     delete_on_termination = "true"
   }
 
-  # ebs_block_device {
-  #   device_name = "/dev/xvdb"
-  #   volume_type = "gp2"
-  #   volume_size = 40
-  # }
-
   user_data = element(data.template_cloudinit_config.tfe.*.rendered, count.index)
 
 }
 
 resource "random_id" "tfe_enc_password" {
-  #count = var.tfe_enc_password == "NULL" ? 1 : 0
   byte_length = 16
 }
 
@@ -80,7 +72,6 @@ resource "aws_route53_record" "tfe" {
   count   = var.terraform_enabled ? 1 : 0
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = lookup(aws_instance.tfe.*.tags[count.index], "Name")
-  #name    = "tfe.${var.dns_domain}"
   type    = "A"
   ttl     = "300"
   records = [element(aws_instance.tfe.*.public_ip, count.index)]

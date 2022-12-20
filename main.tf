@@ -1,3 +1,4 @@
+// provider and provider related or globally used data sources
 provider "aws" {
   region = var.aws_region
 }
@@ -6,7 +7,6 @@ resource "aws_key_pair" "aws-hashistack-key" {
   key_name   = "aws-hashistack-key"
   public_key = var.aws_hashistack_key
 }
-
 
 data "aws_availability_zones" "available" {}
 
@@ -67,6 +67,7 @@ data "aws_ami" "ubuntu" {
 #   owners = ["125523088429"] 
 # }
 
+// network and security
 
 resource "aws_vpc" "hashicorp_vpc" {
   cidr_block           = var.network_address_space

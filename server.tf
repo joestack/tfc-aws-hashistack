@@ -1,3 +1,5 @@
+# locals are used to add a little more magic, dynamic, or circumstances to the vars 
+# used by the template data source to render the user_data scripts 
 locals {
   vault_apt         = length(split("+", var.vault_version)) == 2 ? "vault-enterprise" : "vault"
   consul_apt        = length(split("+", var.consul_version)) == 2 ? "consul-enterprise" : "consul"

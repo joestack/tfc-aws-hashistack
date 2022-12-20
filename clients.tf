@@ -1,5 +1,3 @@
-
-
 data "template_file" "client" {
   count = var.client_count
   template = (join("\n", tolist([

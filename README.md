@@ -1,8 +1,8 @@
 # tfc-aws-hashistack
 
-This is a one-size-fits-all approach to setup Terraform Enterprise, Vault, Consul, Nomad or any combination of them.
+This is a one-size-fits-all approach to setup Terraform Enterprise and/or a 1,3 or 5 node cluster that serves Vault, Consul, Nomad or any combination of them on AWS.
 
-Its behavor can be customized by changing/overriding the defaults in variables.tf
+Its behavor can be customized by changing/overriding the defaults in variables.tf. You can either install the OSS version or the Enterprise version just by overriding the defaults and by assining values to the corresponding variables (**take a look to the examples at the bottom**).
 
 Vault: TLS encryption, auto-unseal, auto-join, raft-storage -> you can start with "vault operator init"
 
@@ -69,3 +69,80 @@ Take a look at the **outputs** to find the IP addresses of the instances or the 
 | tfe_cert_provider | (optional) TLS Certificate options [self-signed, certbot, tf-tls-provider] | certbot |
 | tfe_cert_email | (required if certbot) Certbot email address | none |
 | tfe_auto_install | (optional) Automatically install TFE on instance [true, false] | true |
+
+---
+
+## Content
+
+| File | Description |
+| - | :- |
+| README.md | This README |
+| templates/base.sh | user_data template for generic settings on the instance(s) |
+| templates/server.sh | user_data template to setup the service(s) on instance(s) |
+| templates/client.sh | user_data template to setup the Nomad worker node(s) |
+| templates/docker.sh | user_data template to setup Docker extension on Nomad worker node(s) |
+| templates/tfe.sh | user_data template to setup Terraform Enterprise on the instance |
+| main.tf | Provider related configurations and network configurations |
+| server.tf | Cluster instances include rendering of user_data templates |
+| clients.tf | Nomad worker instances include rendering of user_data templates |
+| tfe.tf | Terraform Enterprise instance include rendering of user_data templates |
+| iam.tf | AWS IAM roles and policy authorization for the instances (autojoin) |
+| kms.tf | Key Management Service that stores Vault unseal keys (auto unseal) |
+| tls.tf | TLS certificates for the services based on terraform_tls_provider |
+| variables.tf | Variables to customize the hashistack |
+| outputs.tf | Outputs and post build-time information |
+
+---
+
+### Examples
+
+#### Terraform Enterprise only with Letsencrypt certificat
+
+    aws_region = "eu-west-1"
+    name = "my_hashistack"
+    dns_domain = "hashidemos.io"
+    aws_hashistack_key "ssh-rsa AA....."
+    terraform_enabled = "true"
+    tfe_lic = "ey......"
+    tfe_cert_email = "foo@example.io"
+
+#### 3 Node Vault and Consul Cluster
+
+    aws_region = "eu-west-1"
+    name = "my_hashistack"
+    dns_domain = "hashidemos.io"
+    aws_hashistack_key "ssh-rsa AA....."
+    vault_enabled = "true"
+    vault_version = "1.9.3"
+    consul_enabled = "true"
+    consul_version = "1.13.3"
+
+#### 3 Node Vault Enterprise Cluster
+
+    aws_region = "eu-west-1"
+    name = "my_hashistack"
+    dns_domain = "hashidemos.io"
+    aws_hashistack_key "ssh-rsa AA....."
+    vault_enabled = "true"
+    vault_version = "1.9.3+ent"
+    vault_lic = "02MV....."
+
+#### 5 Node Vault Ent, Consul Ent, Nomad Ent Cluster with 7 Worker Nodes and Terraform Enterprise
+
+    aws_region = "eu-west-1"
+    name = "my_hashistack"
+    server_count = "5"
+    dns_domain = "hashidemos.io"
+    aws_hashistack_key "ssh-rsa AA....."
+    vault_enabled = "true"
+    vault_version = "1.9.3+ent"
+    vault_lic = "02MV....."
+    consul_enabled = "true"
+    consul_version = "1.13.3+ent-1"
+    consul_lic = "02MV....."
+    nomad_enabled = "true"
+    nomad_version = "1.2.5+ent"
+    nomad_lic = "01MV....."
+    client_count = "7"
+    terraform_enabled = "true"
+    tfe_lic = "ey......"

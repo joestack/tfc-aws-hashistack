@@ -35,6 +35,7 @@ seal "awskms" {
   kms_key_id = "${kms_key_id}"
 }
 ui = true
+license_path = "/opt/vault/license.hclic"
 disable_mlock = true
 #cluster_addr = "https://$(private_ip):8201"
 #cluster_addr = "https://${node_name}.${dns_domain}:8201"

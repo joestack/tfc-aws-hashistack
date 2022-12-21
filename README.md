@@ -96,7 +96,7 @@ Take a look at the **outputs** to find the IP addresses of the instances or the 
 
 ### Examples
 
-#### Terraform Enterprise only with Letsencrypt certificat
+#### Terraform Enterprise only with Letsencrypt certificate
 
     aws_region = "eu-west-1"
     name = "my_hashistack"

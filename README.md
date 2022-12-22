@@ -2,7 +2,7 @@
 
 This is a one-size-fits-all approach to setup Terraform Enterprise and/or a 1,3 or 5 node cluster that serves Vault, Consul, Nomad or any combination of them on AWS.
 
-Its behavor can be customized by changing/overriding the defaults in variables.tf. You can either install the OSS version or the Enterprise version just by overriding the defaults and by assining values to the corresponding variables (**take a look to the examples at the bottom**).
+Its behavor can be customized by changing/overriding the defaults in variables.tf. You can either install the OSS version or the Enterprise version just by overriding the defaults and by assining values to the corresponding variables (**take a look at the examples at the bottom**).
 
 Vault: TLS encryption, auto-unseal, auto-join, raft-storage -> you can start with "vault operator init"
 

@@ -18,6 +18,8 @@ Main focus on this repository is about simplicity and readability. It is based o
 
 Take a look at the **outputs** to find the IP addresses of the instances or the initial password to access Terraform
 
+To identify the concrete Enterprise Version String to be used, run i.e. `apt-cache show vault-enterprise`
+
 ---
 
 ## Variable Argument Reference

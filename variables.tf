@@ -79,7 +79,7 @@ variable "vault_enabled" {
 }
 
 variable "vault_version" {
-  description = "i.e. 1.9.3 or 1.9.3+ent"
+  description = "i.e. 1.9.3 or 1.9.3+ent 'apt-cache show vault-enterprise'"
   default     = "1.9.3"
 }
 
@@ -101,7 +101,7 @@ variable "consul_enabled" {
 }
 
 variable "consul_version" {
-  description = "i.e. 1.11.2 or 1.11.2+ent nowadays +ent-1"
+  description = "i.e. 1.11.2 or 1.11.2+ent nowadays +ent-1 'apt-cache show consul-enterprise'"
   default     = "1.13.3"
 }
 
@@ -124,7 +124,7 @@ variable "nomad_enabled" {
 }
 
 variable "nomad_version" {
-  description = "i.e. 1.2.5 or 1.2.5+ent"
+  description = "i.e. 1.2.5 or 1.2.5+ent 'apt-cache show nomad-enterprise'"
   default     = "1.2.5"
 }
 

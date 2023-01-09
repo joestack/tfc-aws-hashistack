@@ -64,7 +64,8 @@ To identify the concrete Enterprise Version String to be used, run i.e. `apt-cac
 | client_name | (optional) Hostname prefix of Nomad clients | nmd-worker |
 | **Terraform Settings**
 | terraform_enabled | (optional) Create a Terraform Enterprise instance [true, false] | false |
-| tfe_lic | (required if terraform_enabled) The Terraform Enterprise license file. | NULL |
+| tfe_airgapped | (optional) In case TFE is an airgapped install [true, false] | false |
+| tfe_lic | (required if terraform_enabled) The Terraform Enterprise license file (must be base64 encoded if airgapped). | NULL |
 | tfe_auth_password | (optional) The initial authentication password. Will be created if NULL | NULL |
 | tfe_enc_password | (optional) The encryption key to be used to encrypt state and db. Will be created if NULL | NULL |
 | tfe_hostname | (optional) The hostname of the TFE instance | tfe-joestack |

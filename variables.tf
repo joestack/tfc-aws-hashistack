@@ -164,10 +164,16 @@ variable "terraform_enabled" {
   default = "false"
 }
 
+variable "tfe_airgapped" {
+  description = "[true or false] The value of tfe_lic has to be `base64 -w0 ` encoded if set to true"
+  default     = "false"
+}
+
 variable "tfe_lic" {
   description = "You must be mad to assign sensitive values to a variable here! Use one of the other options"
   default     = "NULL"
 }
+
 variable "tfe_auth_password" {
   description = "The initial password to access the TFE app on port 8800. If not specified, a random one will be created"
   default     = "NULL"

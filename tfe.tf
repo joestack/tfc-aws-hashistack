@@ -14,7 +14,7 @@ data "template_file" "tfe" {
   vars = {
     node_name         = var.tfe_hostname
     tfe_fqdn          = "${var.tfe_hostname}.${var.dns_domain}"
-    tfe_lic           = var.tfe_airgapped ? base64decode(var.tfe_lic) : var.tfe_lic
+    tfe_lic           = var.tfe_airgapped ? textdecodebase64(var.tfe_lic) : var.tfe_lic
     tfe_auth_password = local.tfe_auth_password
     tfe_tls_cert      = tls_locally_signed_cert.tfe.0.cert_pem
     tfe_tls_key       = tls_private_key.tfe.0.private_key_pem

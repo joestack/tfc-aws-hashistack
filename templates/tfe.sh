@@ -24,11 +24,11 @@ curl https://install.terraform.io/tfe/uninstall > ${tfe_disk_path}/uninstall.sh
 
 cert_is_tf_tls_provider() {
   # FIXME: need to be tested
-  sudo echo "${tfe_tls_cert}" > /etc/ssl/certs/tfe_fullchain.pem
-  sudo echo "${tfe_tls_key}" > /etc/ssl/certs/tfe_privkey.pem
-  sudo echo "${tfe_tls_ca}" > /etc/ssl/certs/tfe_ca.pem
+  echo "${tfe_tls_cert}" > /etc/ssl/certs/tfe_fullchain.pem
+  echo "${tfe_tls_key}" > /etc/ssl/certs/tfe_privkey.pem
+  echo "${tfe_tls_ca}" > /etc/ssl/certs/tfe_ca.pem
 
-  sudo tee /etc/replicated.conf > /dev/null <<EOF
+  tee /etc/replicated.conf > /dev/null <<EOF
 {
     "DaemonAuthenticationType":     "password",
     "DaemonAuthenticationPassword": "${tfe_auth_password}",
@@ -48,7 +48,7 @@ cert_is_certbot() {
   apt-get install -y certbot 
   certbot certonly --standalone --agree-tos -m ${tfe_cert_email} -d ${tfe_fqdn} -n
 
-  sudo tee /etc/replicated.conf > /dev/null <<EOF
+  tee /etc/replicated.conf > /dev/null <<EOF
 {
     "DaemonAuthenticationType":     "password",
     "DaemonAuthenticationPassword": "${tfe_auth_password}",
@@ -65,7 +65,7 @@ EOF
 
 cert_is_self_signed() {
   # FIXME: need to be tested
-  sudo tee /etc/replicated.conf > /dev/null <<EOF
+  tee /etc/replicated.conf > /dev/null <<EOF
 {
     "DaemonAuthenticationType":     "password",
     "DaemonAuthenticationPassword": "${tfe_auth_password}",
@@ -83,7 +83,7 @@ EOF
 
 
 application_settings() {
-sudo tee ${tfe_disk_path}/application-settings.json > /dev/null <<EOF
+tee ${tfe_disk_path}/application-settings.json > /dev/null <<EOF
 {
   "aws_access_key_id": {},
   "aws_instance_profile": {},
@@ -170,7 +170,14 @@ EOF
 
 run_installer() {
   cd ${tfe_disk_path}
-  sudo bash install.sh no-proxy private-address=$(private_ip) public-address=$(public_ip)
+
+  if [[ ${tfe_auto_install} = "true" ]]
+  then
+    sudo bash install.sh no-proxy private-address=$(private_ip) public-address=$(public_ip)
+  else
+    exit 0
+  fi
+  
 }
 
 ####################
@@ -179,14 +186,4 @@ run_installer() {
 prerequisites
 cert_is_${tfe_cert_provider}
 application_settings
-[[ ${tfe_auto_install} = "true" ]] && run_installer
-
-
-#sudo bash install.sh no-proxy private-address=$(private_ip) public-address=$(public_ip)
-
-# firewall-cmd --zone=public --permanent --add-port=8800/tcp
-# firewall-cmd --zone=public --permanent --add-port=443/tcp
-# firewall-cmd --reload
-
-# sudo firewall-cmd --zone=public --permanent --add-port=8800/tcp 
-# sudo firewall-cmd --zone=public --permanent --add-port=443/tcp
+run_installer

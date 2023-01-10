@@ -1,6 +1,6 @@
 #!/bin/bash
 
-prerequisites() {
+prerequisites_orig() {
 sudo mkdir -p ${tfe_disk_path}
 sudo echo "${tfe_lic}" > ${tfe_disk_path}/license.rli
 
@@ -8,7 +8,21 @@ curl https://install.terraform.io/ptfe/stable > ${tfe_disk_path}/install.sh
 curl https://install.terraform.io/tfe/uninstall > ${tfe_disk_path}/uninstall.sh
 }
 
-is_tf_tls_provider() {
+prerequisites() {
+mkdir -p ${tfe_disk_path}
+
+if [[ ${tfe_airgapped} = "true" ]]
+then
+  echo "${tfe_lic}" | base64 -d > ${tfe_disk_path}/license.rli
+else
+  echo "${tfe_lic}" > ${tfe_disk_path}/license.rli
+fi 
+
+curl https://install.terraform.io/ptfe/stable > ${tfe_disk_path}/install.sh
+curl https://install.terraform.io/tfe/uninstall > ${tfe_disk_path}/uninstall.sh
+}
+
+cert_is_tf_tls_provider() {
   # FIXME: need to be tested
   sudo echo "${tfe_tls_cert}" > /etc/ssl/certs/tfe_fullchain.pem
   sudo echo "${tfe_tls_key}" > /etc/ssl/certs/tfe_privkey.pem
@@ -30,7 +44,7 @@ EOF
 
 }
 
-is_certbot() {
+cert_is_certbot() {
   apt-get install -y certbot 
   certbot certonly --standalone --agree-tos -m ${tfe_cert_email} -d ${tfe_fqdn} -n
 
@@ -49,7 +63,7 @@ is_certbot() {
 EOF
 }
 
-is_self_signed() {
+cert_is_self_signed() {
   # FIXME: need to be tested
   sudo tee /etc/replicated.conf > /dev/null <<EOF
 {
@@ -163,7 +177,7 @@ run_installer() {
 #####   MAIN   #####
 ####################
 prerequisites
-is_${tfe_cert_provider}
+cert_is_${tfe_cert_provider}
 application_settings
 [[ ${tfe_auto_install} = "true" ]] && run_installer
 

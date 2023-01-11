@@ -1,6 +1,5 @@
 # Creation of a cluster running any combination of Vault, Consul, Nomad or Terraform (HashiStack)
 
-
 This repository is a one-size-fits-all approach to get easily started with the deployment of any of the above mentioned HashiCorp tools on AWS. The main focus is about simplicity and readability. It is purely based on Terraform IaC. The cluster TLS certs are provided by hashicorp/terraform-provider-tls. The instances are configured via "user-data" scripts (bash). The "user-data" scripts are dynamically rendered (hashicorp/terraform-provider-template) based on the assigned values in variables.tf.
 
 ---

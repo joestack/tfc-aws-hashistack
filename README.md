@@ -1,24 +1,67 @@
-# tfc-aws-hashistack
+# Creation of a cluster running any combination of Vault, Consul, Nomad or Terraform (HashiStack)
 
-This is a one-size-fits-all approach to setup Terraform Enterprise and/or a 1,3 or 5 node cluster that serves Vault, Consul, Nomad or any combination of them on AWS.
 
-Its behavor can be customized by changing/overriding the defaults in variables.tf. You can either install the OSS version or the Enterprise version just by overriding the defaults and by assining values to the corresponding variables (**take a look at the examples at the bottom**).
+This repository is a one-size-fits-all approach to get easily started with the deployment of any of the above mentioned HashiCorp tools on AWS. The main focus is about simplicity and readability. It is purely based on Terraform IaC. The cluster TLS certs are provided by hashicorp/terraform-provider-tls. The instances are configured via "user-data" scripts (bash). The "user-data" scripts are dynamically rendered (hashicorp/terraform-provider-template) based on the assigned values in variables.tf.
 
-Vault: TLS encryption, auto-unseal, auto-join, raft-storage -> you can start with "vault operator init"
+---
+> Its behavor can be customized by changing/overriding the defaults in variables.tf. (**take a look at the examples at the bottom**).
+>
+> Take a look at the **outputs** to find the IP addresses of the instances or the initial password to get access to the Terraform Enterpise admin page on port 8800.
+>
+> Use `apt-cache show vault-enterprise` to identiy a proper version string of a Enterprise version.
+---
 
-Consul: TLS encryption, gossip encryption, ACL bootstrapping
+***Cluster Features***
 
-Nomad: Auto bootstrapping, variable amount of workers (can be configured in variables.tf as well)
+- variable cluster size (typical 1,3, or 5)
+- auto_join of server nodes
+- raft-clustering
+- raft storage backend
+- configurable ingress CIDR (ACL)
 
-Terraform: mounted disk, certbot TLS
+***Vault Features***
 
-Main focus on this repository is about simplicity and readability. It is based on Terraform IaC only. The TLS certs are provided by hashicorp/terraform-provider-tls for the cluster. The TFE TLS certificate can be self-signed, tf-provider-tls, or certbot (Letsencrypt). The instances/hosts are configured through "user-data" scripts (bash) during the initial built-time. The "user-data" scripts are dynamically rendered (hashicorp/terraform-provider-template) based on variables.tf.
+- auto-unseal (AWS_KMS)
+- TLS encryption
+
+***Consul Features***
+
+- TLS encryption
+- Gossip encryption
+- ACL bootstrapping
+
+***Nomad Features***
+
+- configurable amount of worker nodes
+- auto bootstrapping
+
+***Terraform Enterprise Features***
+
+- letsenrypt (certbot) TLS
+- airgapped license support
+- "mounted disk" storage backend
 
 ---
 
-Take a look at the **outputs** to find the IP addresses of the instances or the initial password to access Terraform
+## Content of the repository
 
-To identify the concrete Enterprise Version String to be used, run i.e. `apt-cache show vault-enterprise`
+| File | Description |
+| - | :- |
+| README.md | This README |
+| templates/base.sh | user_data template for generic settings on the instance(s) |
+| templates/server.sh | user_data template to setup the service(s) on instance(s) |
+| templates/client.sh | user_data template to setup the Nomad worker node(s) |
+| templates/docker.sh | user_data template to setup Docker extension on Nomad worker node(s) |
+| templates/tfe.sh | user_data template to setup Terraform Enterprise on the instance |
+| main.tf | Provider related configurations and network configurations |
+| server.tf | Cluster instances include rendering of user_data templates |
+| clients.tf | Nomad worker instances include rendering of user_data templates |
+| tfe.tf | Terraform Enterprise instance include rendering of user_data templates |
+| iam.tf | AWS IAM roles and policy authorization for the instances (autojoin) |
+| kms.tf | Key Management Service that stores Vault unseal keys (auto unseal) |
+| tls.tf | TLS certificates for the services based on terraform_tls_provider |
+| variables.tf | Variables to customize the hashistack |
+| outputs.tf | Outputs and post build-time information |
 
 ---
 
@@ -64,8 +107,8 @@ To identify the concrete Enterprise Version String to be used, run i.e. `apt-cac
 | client_name | (optional) Hostname prefix of Nomad clients | nmd-worker |
 | **Terraform Settings**
 | terraform_enabled | (optional) Create a Terraform Enterprise instance [true, false] | false |
-| tfe_airgapped | (optional) In case the TFE is an airgap enabled license [true, false] | false |
-| tfe_lic | (required if terraform_enabled) The Terraform Enterprise license file (must be base64 encoded if airgapped). | NULL |
+| tfe_lic | (required if terraform_enabled) The Terraform Enterprise license (must be base64 encoded in case of airgapped). | NULL |
+| tfe_airgapped | (optional) In case of using an airgap enabled license [true, false] | false |
 | tfe_auth_password | (optional) The initial authentication password. Will be created if NULL | NULL |
 | tfe_enc_password | (optional) The encryption key to be used to encrypt state and db. Will be created if NULL | NULL |
 | tfe_hostname | (optional) The hostname of the TFE instance | tfe-joestack |
@@ -75,31 +118,9 @@ To identify the concrete Enterprise Version String to be used, run i.e. `apt-cac
 
 ---
 
-## Content
+## Examples
 
-| File | Description |
-| - | :- |
-| README.md | This README |
-| templates/base.sh | user_data template for generic settings on the instance(s) |
-| templates/server.sh | user_data template to setup the service(s) on instance(s) |
-| templates/client.sh | user_data template to setup the Nomad worker node(s) |
-| templates/docker.sh | user_data template to setup Docker extension on Nomad worker node(s) |
-| templates/tfe.sh | user_data template to setup Terraform Enterprise on the instance |
-| main.tf | Provider related configurations and network configurations |
-| server.tf | Cluster instances include rendering of user_data templates |
-| clients.tf | Nomad worker instances include rendering of user_data templates |
-| tfe.tf | Terraform Enterprise instance include rendering of user_data templates |
-| iam.tf | AWS IAM roles and policy authorization for the instances (autojoin) |
-| kms.tf | Key Management Service that stores Vault unseal keys (auto unseal) |
-| tls.tf | TLS certificates for the services based on terraform_tls_provider |
-| variables.tf | Variables to customize the hashistack |
-| outputs.tf | Outputs and post build-time information |
-
----
-
-### Examples
-
-#### Terraform Enterprise only with Letsencrypt certificate
+### Terraform Enterprise only with Letsencrypt certificate
 
     aws_region = "eu-west-1"
     name = "my_hashistack"

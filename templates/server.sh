@@ -226,10 +226,6 @@ ports = {
   grpc_tls = 8503
 }
 
-auto_config = {
-  enabled = true
-}
-
 encrypt = "${consul_gossip_key}"
 
 acl = {

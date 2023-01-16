@@ -221,7 +221,7 @@ resource "aws_security_group_rule" "consul-1" {
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8500
-  to_port           = 8500
+  to_port           = 8503
   protocol          = "tcp"
   cidr_blocks       = [var.whitelist_ip]
 }

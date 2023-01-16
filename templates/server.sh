@@ -192,6 +192,108 @@ sudo systemctl start consul
 sleep 2
 
 }
+################################
+###   CONSUL BLOCK TESTING   ###
+################################
+test_consul_apt() {
+
+sudo apt-get install -y ${consul_apt}=${consul_version}
+sudo echo ${consul_lic} > /opt/consul/license.hclic
+sudo chown -R consul:consul /opt/consul/
+
+
+sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
+data_dir         = "/opt/consul/"
+server           = true
+license_path     = "/opt/consul/license.hclic"
+bootstrap_expect = ${server_count}
+advertise_addr   = "$(private_ip)" 
+client_addr      = "0.0.0.0"
+ui               = true
+datacenter       = "${datacenter}"
+retry_join       = ["provider=aws tag_key=auto_join tag_value=${auto_join_value}"]
+retry_max        = 10
+retry_interval   = "15s"
+
+encrypt = "${consul_gossip_key}"
+
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+  tokens {
+    initial_management = "${consul_init_token}"
+  }
+}
+
+tls {
+  defaults {
+    key_file = "/etc/ssl/certs/consul_privkey.key"
+    cert_file = "/etc/ssl/certs/consul_fullchain.pem"
+    ca_file = "/etc/ssl/certs/ca.pem"
+    verify_incoming = true
+    verify_outgoing = true
+  }
+
+  internal_rpc {
+    verify_server_hostname = true
+  }
+}
+
+EOF
+
+echo "Consul ENV "
+sudo tee /etc/consul.d/consul.conf > /dev/null <<ENVVARS
+FLAGS=-ui -client 0.0.0.0
+CONSUL_HTTP_ADDR=${consul_protocol}://127.0.0.1:8500
+ENVVARS
+
+sudo chown -R consul:consul /etc/consul.d/
+
+echo "--> Writing profile"
+sudo tee /etc/profile.d/consul.sh > /dev/null <<EOF
+export CONSUL_HTTP_ADDR=${consul_protocol}://127.0.0.1:8500
+export CONSUL_HTTP_TOKEN=${consul_init_token}
+CONSUL_HTTP_SSL=true
+CONSUL_HTTP_SSL_VERIFY=false
+EOF
+
+source /etc/profile.d/consul.sh
+
+echo "--> Generating systemd configuration"
+sudo tee /etc/systemd/system/consul.service > /dev/null <<EOF
+[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/consul.d/consul.hcl
+[Service]
+User=consul
+Group=consul
+EnvironmentFile=/etc/consul.d/consul.conf
+ExecStart=/usr/bin/consul agent -config-dir=/etc/consul.d/ \$FLAGS
+ExecReload=/bin/kill --signal HUP \$MAINPID
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
+LimitNOFILE=65536
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+sudo echo "${consul_cert}" > /etc/ssl/certs/consul_fullchain.pem
+sudo echo "${consul_key}" > /etc/ssl/certs/consul_privkey.key
+sudo echo "${consul_ca}" > /etc/ssl/certs/ca.pem
+
+
+echo "--> Starting consul"
+sudo systemctl enable consul
+sudo systemctl start consul
+sleep 2
+
+}
 
 ########################
 ###    NOMAD BLOCK   ###
@@ -335,7 +437,8 @@ EOF
 ####################
 
 [[ ${vault_enabled} = "true" ]] && install_vault_apt 
-[[ ${consul_enabled} = "true" ]] && install_consul_apt
+#[[ ${consul_enabled} = "true" ]] && install_consul_apt
+[[ ${consul_enabled} = "true" ]] && test_consul_apt
 #[[ ${vault_enabled} = "true" ]] && add_consul_to_vault 
 [[ ${nomad_enabled} = "true" ]] && install_nomad_apt
 additionals

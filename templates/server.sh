@@ -221,9 +221,13 @@ addresses = {
 }
 
 ports = {
-  https = "8501"
-  grpc = "8502"
-  grpc_tls = "8503"
+  https = 8501
+  grpc = 8502
+  grpc_tls = 8503
+}
+
+auto_config = {
+  enabled = true
 }
 
 encrypt = "${consul_gossip_key}"

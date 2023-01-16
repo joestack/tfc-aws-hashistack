@@ -187,7 +187,7 @@ resource "aws_security_group_rule" "vault-1" {
 }
 
 resource "aws_security_group_rule" "vault-2" {
-  count             = var.vault_enabled ? 1 : 0
+  count             = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8300
@@ -197,7 +197,7 @@ resource "aws_security_group_rule" "vault-2" {
 }
 
 resource "aws_security_group_rule" "vault-3" {
-  count             = var.vault_enabled ? 1 : 0
+  count             = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8300

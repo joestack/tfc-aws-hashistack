@@ -39,5 +39,5 @@ output "consul_init_token" {
 }
 
 output "cluster_fqdn" {
-  value = tolist(aws_route53_record.server.*.fqdn)
+  value = aws_route53_record.server.*.fqdn
 }

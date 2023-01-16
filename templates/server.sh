@@ -204,6 +204,7 @@ sudo chown -R consul:consul /opt/consul/
 
 sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
 data_dir         = "/opt/consul/"
+log_level        = "INFO"
 server           = true
 license_path     = "/opt/consul/license.hclic"
 bootstrap_expect = ${server_count}
@@ -212,8 +213,18 @@ client_addr      = "0.0.0.0"
 ui               = true
 datacenter       = "${datacenter}"
 retry_join       = ["provider=aws tag_key=auto_join tag_value=${auto_join_value}"]
-retry_max        = 10
+retry_max        = 20
 retry_interval   = "15s"
+
+addresses = {
+  https = "0.0.0.0"
+}
+
+ports = {
+  https = "8501"
+  grpc = "8502"
+  grpc_tls = "8503"
+}
 
 encrypt = "${consul_gossip_key}"
 

@@ -254,8 +254,8 @@ echo "--> Writing profile"
 sudo tee /etc/profile.d/consul.sh > /dev/null <<EOF
 export CONSUL_HTTP_ADDR=${consul_protocol}://127.0.0.1:8500
 export CONSUL_HTTP_TOKEN=${consul_init_token}
-CONSUL_HTTP_SSL=true
-CONSUL_HTTP_SSL_VERIFY=false
+export CONSUL_HTTP_SSL=true
+export CONSUL_HTTP_SSL_VERIFY=false
 EOF
 
 source /etc/profile.d/consul.sh
@@ -437,8 +437,8 @@ EOF
 ####################
 
 [[ ${vault_enabled} = "true" ]] && install_vault_apt 
-#[[ ${consul_enabled} = "true" ]] && install_consul_apt
-[[ ${consul_enabled} = "true" ]] && test_consul_apt
+[[ ${consul_enabled} = "true" ]] && install_consul_apt
+#[[ ${consul_enabled} = "true" ]] && test_consul_apt
 #[[ ${vault_enabled} = "true" ]] && add_consul_to_vault 
 [[ ${nomad_enabled} = "true" ]] && install_nomad_apt
 additionals

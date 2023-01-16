@@ -33,3 +33,7 @@ output "tfe_enc_password" {
 output "tfe_auth_passord" {
   value = var.terraform_enabled ? local.tfe_auth_password : ""
 }
+
+output "consul_init_token" {
+  value = var.consul_enabled ? local.consul_init_token : ""
+}

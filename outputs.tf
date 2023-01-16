@@ -37,3 +37,7 @@ output "tfe_auth_passord" {
 output "consul_init_token" {
   value = var.consul_enabled ? local.consul_init_token : ""
 }
+
+output "cluster_fqdn" {
+  value = local.server_count != "0" ? aws_route53_record.server.*.fqdn : ""
+}

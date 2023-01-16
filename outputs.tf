@@ -39,5 +39,5 @@ output "consul_init_token" {
 }
 
 output "cluster_fqdn" {
-  value = local.server_count != 0 ? tolist(aws_route53_record.server.*.fqdn) : ""
+  value = local.server_count != 0 ? tolist(aws_route53_record.server.*.fqdn) : 0
 }

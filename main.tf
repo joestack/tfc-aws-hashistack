@@ -186,21 +186,31 @@ resource "aws_security_group_rule" "vault-1" {
   cidr_blocks       = [var.whitelist_ip]
 }
 
-resource "aws_security_group_rule" "vault-2" {
+resource "aws_security_group_rule" "server-rpc" {
   count             = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
   from_port         = 8300
+  to_port           = 8300
+  protocol          = "tcp"
+  cidr_blocks       = [var.whitelist_ip]
+}
+
+resource "aws_security_group_rule" "serf-tcp" {
+  count             = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? 1 : 0
+  security_group_id = aws_security_group.primary.id
+  type              = "ingress"
+  from_port         = 8301
   to_port           = 8302
   protocol          = "tcp"
   cidr_blocks       = [var.whitelist_ip]
 }
 
-resource "aws_security_group_rule" "vault-3" {
+resource "aws_security_group_rule" "serf-udp" {
   count             = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
-  from_port         = 8300
+  from_port         = 8301
   to_port           = 8302
   protocol          = "udp"
   cidr_blocks       = [var.whitelist_ip]
@@ -216,7 +226,7 @@ resource "aws_security_group_rule" "vault-4" {
   cidr_blocks       = [var.whitelist_ip]
 }
 
-resource "aws_security_group_rule" "consul-1" {
+resource "aws_security_group_rule" "consul-api" {
   count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
@@ -226,7 +236,7 @@ resource "aws_security_group_rule" "consul-1" {
   cidr_blocks       = [var.whitelist_ip]
 }
 
-resource "aws_security_group_rule" "consul-2" {
+resource "aws_security_group_rule" "consul-dns-tcp" {
   count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
@@ -236,7 +246,7 @@ resource "aws_security_group_rule" "consul-2" {
   cidr_blocks       = [var.whitelist_ip]
 }
 
-resource "aws_security_group_rule" "consul-3" {
+resource "aws_security_group_rule" "consul-dns-udp" {
   count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
@@ -246,25 +256,25 @@ resource "aws_security_group_rule" "consul-3" {
   cidr_blocks       = [var.whitelist_ip]
 }
 
-resource "aws_security_group_rule" "consul-4" {
+resource "aws_security_group_rule" "consul-sidecar" {
   count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.primary.id
   type              = "ingress"
-  from_port         = 20000
-  to_port           = 29999
+  from_port         = 21000
+  to_port           = 21255
   protocol          = "tcp"
   cidr_blocks       = [var.whitelist_ip]
 }
 
-resource "aws_security_group_rule" "consul-5" {
-  count             = var.consul_enabled ? 1 : 0
-  security_group_id = aws_security_group.primary.id
-  type              = "ingress"
-  from_port         = 30000
-  to_port           = 39999
-  protocol          = "tcp"
-  cidr_blocks       = [var.whitelist_ip]
-}
+# resource "aws_security_group_rule" "consul-5" {
+#   count             = var.consul_enabled ? 1 : 0
+#   security_group_id = aws_security_group.primary.id
+#   type              = "ingress"
+#   from_port         = 30000
+#   to_port           = 39999
+#   protocol          = "tcp"
+#   cidr_blocks       = [var.whitelist_ip]
+# }
 
 // TFE
 

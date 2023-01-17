@@ -107,7 +107,7 @@ resource "tls_locally_signed_cert" "consul" {
   ca_private_key_pem = tls_private_key.ca[count.index].private_key_pem
   ca_cert_pem        = tls_self_signed_cert.ca[count.index].cert_pem
 
-  validity_period_hours = 12
+  validity_period_hours = 72
   allowed_uses = [
     "key_encipherment",
     "key_agreement",

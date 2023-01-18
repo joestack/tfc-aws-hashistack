@@ -555,7 +555,7 @@ EOF
 ####################
 
 [[ ${vault_enabled} = "true" ]] && install_vault_apt 
-[[ ${consul_enabled} = "true" ]] && install_consul_apt2
+[[ ${consul_enabled} = "true" ]] && install_consul_apt
 #[[ ${consul_enabled} = "true" ]] && test_consul_apt
 #[[ ${vault_enabled} = "true" ]] && add_consul_to_vault 
 [[ ${nomad_enabled} = "true" ]] && install_nomad_apt

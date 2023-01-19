@@ -12,7 +12,7 @@ resource "tls_self_signed_cert" "ca" {
   private_key_pem   = tls_private_key.ca[count.index].private_key_pem
   is_ca_certificate = true
 
-  validity_period_hours = 12
+  validity_period_hours = 720
   allowed_uses = [
     "key_encipherment",
     "key_agreement",
@@ -28,66 +28,20 @@ resource "tls_self_signed_cert" "ca" {
   }
 }
 
-
-### Vault ###
-
-resource "tls_private_key" "vault" {
-  count       = var.vault_tls_enabled ? 1 : 0
+###################
+## Cluster Nodes ##
+###################
+resource "tls_private_key" "server-node" {
+  count       = local.server_count
   algorithm   = "ECDSA"
   ecdsa_curve = "P384"
 }
 
-resource "tls_cert_request" "vault" {
-  count           = var.vault_tls_enabled ? 1 : 0
-  private_key_pem = tls_private_key.vault[count.index].private_key_pem
+resource "tls_cert_request" "server-node" {
+  count           = local.server_count
+  private_key_pem = tls_private_key.server-node[count.index].private_key_pem
   subject {
-    common_name  = var.common_name
-    organization = var.organization
-  }
-
-  dns_names = local.fqdn_tls
-
-  # dns_names = [
-  #   "*.${var.dns_domain}",
-  #   "${var.dns_domain}",
-  #   "${var.server_name}*"
-  # ]
-
-
-  ip_addresses = [
-    "127.0.0.1"
-  ]
-}
-
-
-resource "tls_locally_signed_cert" "vault" {
-  count            = var.vault_tls_enabled ? 1 : 0
-  cert_request_pem = tls_cert_request.vault[count.index].cert_request_pem
-
-  ca_private_key_pem = tls_private_key.ca[count.index].private_key_pem
-  ca_cert_pem        = tls_self_signed_cert.ca[count.index].cert_pem
-
-  validity_period_hours = 12
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-    "server_auth",
-  ]
-}
-
-
-### Consul ###
-
-resource "tls_private_key" "consul" {
-  count       = var.consul_tls_enabled ? 1 : 0
-  algorithm   = "ECDSA"
-  ecdsa_curve = "P384"
-}
-
-resource "tls_cert_request" "consul" {
-  count           = var.consul_tls_enabled ? 1 : 0
-  private_key_pem = tls_private_key.consul[count.index].private_key_pem
-  subject {
+    #common_name  = "${var.server_name}-0${count.index +1}.${var.dns_domain}"
     common_name  = var.common_name
     organization = var.organization
   }
@@ -97,17 +51,16 @@ resource "tls_cert_request" "consul" {
   ip_addresses = [
     "127.0.0.1"
   ]
+
 }
 
+resource "tls_locally_signed_cert" "server-node" {
+  count              = local.server_count
+  cert_request_pem   = tls_cert_request.server-node[count.index].cert_request_pem
+  ca_private_key_pem = element(tls_private_key.ca.*.private_key_pem, count.index)
+  ca_cert_pem        = element(tls_self_signed_cert.ca.*.cert_pem, count.index)
 
-resource "tls_locally_signed_cert" "consul" {
-  count            = var.consul_tls_enabled ? 1 : 0
-  cert_request_pem = tls_cert_request.consul[count.index].cert_request_pem
-
-  ca_private_key_pem = tls_private_key.ca[count.index].private_key_pem
-  ca_cert_pem        = tls_self_signed_cert.ca[count.index].cert_pem
-
-  validity_period_hours = 72
+  validity_period_hours = 720
   allowed_uses = [
     "key_encipherment",
     "key_agreement",
@@ -150,7 +103,7 @@ resource "tls_locally_signed_cert" "tfe" {
   ca_private_key_pem = tls_private_key.ca[count.index].private_key_pem
   ca_cert_pem        = tls_self_signed_cert.ca[count.index].cert_pem
 
-  validity_period_hours = 360
+  validity_period_hours = 720
   allowed_uses = [
     "key_encipherment",
     "key_agreement",

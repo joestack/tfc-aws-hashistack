@@ -1,9 +1,17 @@
 #!/bin/bash
 
 ########################
+###   COMMON BLOCK   ###
+########################
+common() {
+sudo echo "${server_cert}" > /etc/ssl/certs/hashistack_fullchain.pem
+sudo echo "${server_key}" > /etc/ssl/certs/hashistack_privkey.key
+sudo echo "${server_ca}" > /etc/ssl/certs/hashistack_ca.pem
+}
+
+########################
 ###    VAULT BLOCK   ###
 ########################
-
 install_vault_apt() {
 
 sudo apt-get -y install ${vault_apt}=${vault_version}
@@ -17,9 +25,9 @@ sudo tee /etc/vault.d/vault.hcl > /dev/null <<EOF
 listener "tcp" {
     address = "0.0.0.0:8200"
     cluster_address= "0.0.0.0:8201"
-    tls_cert_file = "/etc/ssl/certs/vault_fullchain.crt"
-    tls_key_file  = "/etc/ssl/certs/vault_privkey.key"
-    #tls_client_ca_file = "/etc/vault.d/ca.crt"
+    tls_cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
+    tls_key_file  = "/etc/ssl/certs/hashistack_privkey.key"
+    #tls_client_ca_file = "/etc/vault.d/hashistack_ca.pem"
     tls_disable = "${vault_tls_disable}"
 }
 storage "raft" {
@@ -78,12 +86,6 @@ LimitMEMLOCK=infinity
 WantedBy=multi-user.target
 EOF
 
-
-sudo mkdir --parents /etc/vault.d
-sudo echo "${vault_cert}" > /etc/ssl/certs/vault_fullchain.crt
-sudo echo "${vault_key}" > /etc/ssl/certs/vault_privkey.key
-sudo echo "${ca_cert}" > /etc/ssl/certs/ca.crt
-
 systemctl enable vault
 systemctl start vault
 #vault operator init
@@ -128,9 +130,9 @@ acl = {
 
 tls {
   defaults {
-    key_file = "/etc/ssl/certs/consul_privkey.key"
-    cert_file = "/etc/ssl/certs/consul_fullchain.pem"
-    ca_file = "/etc/ssl/certs/ca.pem"
+    key_file = "/etc/ssl/certs/hashistack_privkey.key"
+    cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
+    ca_file = "/etc/ssl/certs/hashistack_ca.pem"
     verify_incoming = true
     verify_outgoing = true
   }
@@ -179,12 +181,6 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 EOF
-
-
-sudo echo "${consul_cert}" > /etc/ssl/certs/consul_fullchain.pem
-sudo echo "${consul_key}" > /etc/ssl/certs/consul_privkey.key
-sudo echo "${consul_ca}" > /etc/ssl/certs/ca.pem
-
 
 echo "--> Starting consul"
 sudo systemctl enable consul
@@ -234,9 +230,9 @@ auto_encrypt {
 
 tls {
   defaults {
-    key_file = "/etc/ssl/certs/consul_privkey.key"
-    cert_file = "/etc/ssl/certs/consul_fullchain.pem"
-    ca_file = "/etc/ssl/certs/ca.pem"
+    key_file = "/etc/ssl/certs/hashistack_privkey.key"
+    cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
+    ca_file = "/etc/ssl/certs/hashistack_ca.pem"
     verify_incoming = true
     verify_outgoing = true
   }
@@ -285,12 +281,6 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 EOF
-
-
-sudo echo "${consul_cert}" > /etc/ssl/certs/consul_fullchain.pem
-sudo echo "${consul_key}" > /etc/ssl/certs/consul_privkey.key
-sudo echo "${consul_ca}" > /etc/ssl/certs/ca.pem
-
 
 echo "--> Starting consul"
 sudo systemctl enable consul
@@ -346,9 +336,9 @@ acl = {
 
 tls {
   defaults {
-    key_file = "/etc/ssl/certs/consul_privkey.key"
-    cert_file = "/etc/ssl/certs/consul_fullchain.pem"
-    ca_file = "/etc/ssl/certs/ca.pem"
+    key_file = "/etc/ssl/certs/hashistack_privkey.key"
+    cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
+    ca_file = "/etc/ssl/certs/hashistack_ca.pem"
     verify_incoming = true
     verify_outgoing = true
   }
@@ -399,12 +389,6 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 EOF
-
-
-sudo echo "${consul_cert}" > /etc/ssl/certs/consul_fullchain.pem
-sudo echo "${consul_key}" > /etc/ssl/certs/consul_privkey.key
-sudo echo "${consul_ca}" > /etc/ssl/certs/ca.pem
-
 
 echo "--> Starting consul"
 sudo systemctl enable consul
@@ -554,6 +538,7 @@ EOF
 #####   MAIN   #####
 ####################
 
+common
 [[ ${vault_enabled} = "true" ]] && install_vault_apt 
 [[ ${consul_enabled} = "true" ]] && install_consul_apt
 #[[ ${consul_enabled} = "true" ]] && test_consul_apt

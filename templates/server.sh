@@ -129,6 +129,16 @@ acl = {
   }
 }
 
+auto_encrypt {
+  allow_tls = true
+}
+
+ports = {
+  https = 8501
+  grpc = 8502
+  grpc_tls = 8503
+}
+
 tls {
   defaults {
     key_file = "/etc/ssl/certs/hashistack_privkey.key"

@@ -102,7 +102,7 @@ variable "consul_enabled" {
 
 variable "consul_version" {
   description = "i.e. 1.11.2 or 1.11.2+ent nowadays +ent-1 'apt-cache show consul-enterprise'"
-  default     = "1.13.3"
+  default     = "1.13.3-1"
 }
 
 variable "consul_lic" {

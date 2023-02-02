@@ -37,6 +37,15 @@ resource "tls_private_key" "server-node" {
   ecdsa_curve = "P384"
 }
 
+
+# locals {
+#   dns_names = [
+#     "localhost",
+#     "${var.datacenter}.${var.region}"
+#   ]
+# }
+
+
 resource "tls_cert_request" "server-node" {
   count           = local.server_count
   private_key_pem = tls_private_key.server-node[count.index].private_key_pem

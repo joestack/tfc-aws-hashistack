@@ -30,7 +30,8 @@ data "template_file" "server" {
     datacenter        = var.datacenter
     region            = var.region
     auto_join_value   = var.auto_join_value
-    node_name         = format("${var.server_name}-%02d", count.index + 1)
+    node_name         = format("${var.name}-srv-%02d", count.index + 1)
+#    node_name         = format("${var.server_name}-%02d", count.index + 1)
     ca_cert           = local.ca_cert
     server_cert       = tls_locally_signed_cert.server-node[count.index].cert_pem
     server_key        = tls_private_key.server-node[count.index].private_key_pem

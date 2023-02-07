@@ -11,7 +11,8 @@ data "template_file" "client" {
     region          = var.region
     client          = var.client
     auto_join_value = var.auto_join_value
-    node_name       = format("${var.client_name}-%02d", count.index + 1)
+    node_name       = format("${var.name}-worker-%02d", count.index + 1)
+#    node_name       = format("${var.client_name}-%02d", count.index + 1)
     nomad_enabled   = var.nomad_enabled
     nomad_version   = var.nomad_version
     nomad_apt       = local.nomad_apt

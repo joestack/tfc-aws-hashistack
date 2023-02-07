@@ -6,7 +6,8 @@ locals {
   nomad_apt         = length(split("+", var.nomad_version)) == 2 ? "nomad-enterprise" : "nomad"
   kms_key_id        = var.vault_enabled ? aws_kms_key.vault.0.key_id : "NULL"
   ca_cert           = var.create_root_ca ? tls_private_key.ca.0.public_key_pem : "NULL"
-  fqdn_tls          = [for i in range(local.server_count) : format("%v-%02d.%v", var.server_name, i + 1, var.dns_domain)]
+  fqdn_tls          = [for i in range(local.server_count) : format("%v-srv-%02d.%v", var.name, i + 1, var.dns_domain)]
+  #fqdn_tls          = [for i in range(local.server_count) : format("%v-%02d.%v", var.server_name, i + 1, var.dns_domain)]
   vault_protocol    = var.vault_tls_enabled ? "https" : "http"
   vault_tls_disable = var.vault_tls_enabled ? "false" : "true"
   consul_fqdn_tls   = formatlist("server.%s.consul", [var.datacenter])

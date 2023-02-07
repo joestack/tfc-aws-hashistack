@@ -45,7 +45,8 @@ resource "aws_instance" "client" {
   iam_instance_profile        = aws_iam_instance_profile.hc-stack-client.name
 
   tags = {
-    Name      = format("${var.client_name}-%02d", count.index + 1)
+    #Name      = format("${var.client_name}-%02d", count.index + 1)
+    Name      = format("${var.name}-worker-%02d", count.index + 1)
     auto_join = var.auto_join_value
   }
 

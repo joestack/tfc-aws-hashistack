@@ -18,9 +18,9 @@ variable "instance_type" {
   default     = "t2.small"
 }
 
-variable "server_name" {
-  default = "hc-stack-srv"
-}
+# variable "server_name" {
+#   default = "hc-stack-srv"
+# }
 
 variable "root_block_device_size" {
   default = "80"
@@ -153,9 +153,9 @@ variable "client_count" {
   description = "amount of nomad clients?"
   default     = "3"
 }
-variable "client_name" {
-  default = "nmd-worker"
-}
+# variable "client_name" {
+#   default = "nmd-worker"
+# }
 
 
 // TERRAFORM

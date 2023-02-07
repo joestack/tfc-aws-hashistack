@@ -79,7 +79,8 @@ resource "aws_instance" "server" {
   iam_instance_profile        = aws_iam_instance_profile.hc-stack-server.name
 
   tags = {
-    Name      = format("${var.server_name}-%02d", count.index + 1)
+    #Name      = format("${var.server_name}-%02d", count.index + 1)
+    Name      = format("${var.name}-srv-%02d", count.index + 1)
     auto_join = var.auto_join_value
   }
 

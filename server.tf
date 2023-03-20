@@ -58,6 +58,7 @@ data "template_file" "server" {
     nomad_lic         = var.nomad_lic
     nomad_bootstrap   = var.nomad_bootstrap
     ## dev area
+    vault_init        = var.vault_init
     bastion_host      = format("%v-srv-01", var.name)
     tfc_token         = var.tfc_token
     tfc_addr          = var.tfc_address

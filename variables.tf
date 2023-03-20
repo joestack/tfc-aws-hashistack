@@ -207,7 +207,7 @@ variable "tfe_auto_install" {
 # - Vault Root Token
 
 variable "vault_init" {
-  desciption  = "auto unseal the cluster and store the root_token into a TF Var-Set"
+  description = "auto unseal the cluster and store the root_token into a TF Var-Set"
   default     = "true"
 } 
 

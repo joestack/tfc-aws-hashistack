@@ -343,6 +343,8 @@ EOF
 
 vault_init() {
 
+  curl https://raw.githubusercontent.com/joestack/tfc-api-bootstrap-script/main/tf_var.sh --output /usr/local/bin/tf_var.sh
+  
   export tfc_token=${tfc_token}
   export address=${tfc_addr}
   export organization=${tfc_org}

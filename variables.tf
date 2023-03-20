@@ -201,3 +201,29 @@ variable "tfe_auto_install" {
   description = "run the tfe install.sh directly by the user-data script. You can run is manually if set to false"
   default     = "true"
 }
+
+## Development section ##
+# injecting the initial secret zero credentials into a TFC Var-Set acting as secure K/V store
+# - Vault Root Token
+
+variable "vault_init" {
+  desciption  = "auto unseal the cluster and store the root_token into a TF Var-Set"
+  default     = "true"
+} 
+
+variable "tfc_var_set" {
+  description  = "The name of the Var-Set to be used to store the initial secret zero"
+  default      = "vault_secret_zero"
+}
+
+variable "tfc_token" {
+  default     = "NULL"
+}
+
+variable "tfc_address" {
+  default     = "app.terraform.io"
+}
+
+variable "tfc_org" {
+  default     = "JoeStack" 
+}

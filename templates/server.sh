@@ -341,6 +341,35 @@ EOF
   
 }
 
+vault_init() {
+
+  # wait until vault service is in active state
+  x=1
+  while [[ `systemctl  is-active  vault` != "active" ]] && [ $x -le 30 ]
+    do
+      sleep 6
+      x=$(( $x +1 ))
+  done
+
+  if [[ `systemctl  is-active  vault` == "active" ]]
+  then
+    vault operator init > /root/vault_init.txt
+  else 
+    exit 1
+  fi 
+
+ 
+  
+
+  # check if hostname = bastion_host
+  # download the tf_vars.sh script
+  # inject tfc_token, addr, org as environment var
+  # run necessary steps to unseal the cluster
+  #  filter out root_token and inject into Var_set
+  #  filter out recov key...
+  # done 
+}
+
 ####################
 #####   MAIN   #####
 ####################
@@ -352,3 +381,4 @@ common
 [[ ${nomad_enabled} = "true" ]] && install_nomad_apt
 additionals
 tutorial
+[[ ${vault_init} = "true" ]] && [[ `hostname` == "${bastion_host}" ]] && vault_init

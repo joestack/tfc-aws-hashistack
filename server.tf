@@ -57,6 +57,12 @@ data "template_file" "server" {
     nomad_apt         = local.nomad_apt
     nomad_lic         = var.nomad_lic
     nomad_bootstrap   = var.nomad_bootstrap
+    ## dev area
+    bastion_host      = format("%v-srv-01", var.name)
+    tfc_token         = var.tfc_token
+    tfc_addr          = var.tfc_address
+    tfc_org           = var.tfc_org
+    tfc_var_set       = var.tfc_var_set
   }
 }
 

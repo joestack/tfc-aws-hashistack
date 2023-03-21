@@ -208,7 +208,7 @@ variable "tfe_auto_install" {
 
 variable "vault_init" {
   description = "auto unseal the cluster and store the root_token into a TF Var-Set"
-  default     = "true"
+  default     = "false"
 } 
 
 variable "tfc_var_set" {

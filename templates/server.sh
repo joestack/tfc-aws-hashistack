@@ -372,7 +372,7 @@ vault_init() {
 
   if [[ -e /root/vault_init.txt ]]
   then
-    tf_vars.sh -1
+    tf_vars.sh -W
   else 
     exit 1
   fi 

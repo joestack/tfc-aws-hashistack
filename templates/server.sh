@@ -343,8 +343,8 @@ EOF
 
 vault_init() {
 
-  curl https://raw.githubusercontent.com/joestack/tfc-api-bootstrap-script/main/tf_var.sh --output /usr/local/bin/tf_var.sh
-  chmod 755 /usr/local/bin/tf_var.sh
+  curl https://raw.githubusercontent.com/joestack/tfc-api-helper-scripts/main/tf_vars.sh --output /usr/local/bin/tf_vars.sh
+  chmod 755 /usr/local/bin/tf_vars.sh
 
   env=/root/environment.conf
 
@@ -353,10 +353,6 @@ vault_init() {
   echo organization=${tfc_org} >> $env 
   echo tfc_var_set=${tfc_var_set} >> $env 
 
-  #export tfc_token=${tfc_token}
-  #export address=${tfc_addr}
-  #export organization=${tfc_org}
-  #export tfc_var_set=${tfc_var_set}
   
   # wait until vault service is in active state
   x=1
@@ -373,44 +369,13 @@ vault_init() {
     exit 1
   fi 
 
-  # if [[ -e /root/vault_init.txt ]]
-  # then
-  #   source $env
-  #   tf_var.sh -d $tfc_var_set
-  #   tf_var.sh -c $tfc_var_set
-  #   n=1 
-  #   cat /root/vault_init.txt | grep ^"Recovery Key " | awk -F: '{print $2}' |\
-  #    while read key 
-  #    do 
-  #     tf_var.sh -i $tfc_var_set,recovery_key_$n,$key,terraform,false,false
-  #     n=$(( $n +1 )) 
-  #    done
-  #   cat /root/vault_init.txt | grep ^"Initial Root Token:" | awk -F: '{print $2}' |\
-  #    while read token
-  #    do
-  #     tf_var.sh -i $tfc_var_set,root_token,$token,terraform,false,false 
-  #    done 
-  # else
-  #   exit 1
-  # fi 
-
   if [[ -e /root/vault_init.txt ]]
   then
-    tf_var.sh
+    tf_vars.sh -0
   else 
     exit 1
   fi 
 
-  
-  
-
-  # check if hostname = bastion_host
-  # download the tf_vars.sh script
-  # inject tfc_token, addr, org as environment var
-  # run necessary steps to unseal the cluster
-  #  filter out root_token and inject into Var_set
-  #  filter out recov key...
-  # done 
 }
 
 ####################

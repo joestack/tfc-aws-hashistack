@@ -373,29 +373,35 @@ vault_init() {
     exit 1
   fi 
 
+  # if [[ -e /root/vault_init.txt ]]
+  # then
+  #   source $env
+  #   tf_var.sh -d $tfc_var_set
+  #   tf_var.sh -c $tfc_var_set
+  #   n=1 
+  #   cat /root/vault_init.txt | grep ^"Recovery Key " | awk -F: '{print $2}' |\
+  #    while read key 
+  #    do 
+  #     tf_var.sh -i $tfc_var_set,recovery_key_$n,$key,terraform,false,false
+  #     n=$(( $n +1 )) 
+  #    done
+  #   cat /root/vault_init.txt | grep ^"Initial Root Token:" | awk -F: '{print $2}' |\
+  #    while read token
+  #    do
+  #     tf_var.sh -i $tfc_var_set,root_token,$token,terraform,false,false 
+  #    done 
+  # else
+  #   exit 1
+  # fi 
+
   if [[ -e /root/vault_init.txt ]]
   then
-    source $$env
-    tf_var.sh -d $tfc_var_set
-    tf_var.sh -c $tfc_var_set
-    n=1 
-    cat /root/vault_init.txt | grep ^"Recovery Key " | awk -F: '{print $2}' |\
-     while read key 
-     do 
-      tf_var.sh -i $tfc_var_set,recovery_key_$n,$key,terraform,false,false
-      n=$(( $n +1 )) 
-     done
-    cat /root/vault_init.txt | grep ^"Initial Root Token:" | awk -F: '{print $2}' |\
-     while read token
-     do
-      tf_var.sh -i $tfc_var_set,root_token,$token,terraform,false,false 
-     done 
-  else
+    tf_var.sh
+  else 
     exit 1
   fi 
 
-
- 
+  
   
 
   # check if hostname = bastion_host

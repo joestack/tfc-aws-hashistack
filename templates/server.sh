@@ -346,10 +346,17 @@ vault_init() {
   curl https://raw.githubusercontent.com/joestack/tfc-api-bootstrap-script/main/tf_var.sh --output /usr/local/bin/tf_var.sh
   chmod 755 /usr/local/bin/tf_var.sh
 
-  export tfc_token=${tfc_token}
-  export address=${tfc_addr}
-  export organization=${tfc_org}
-  export tfc_var_set=${tfc_var_set}
+  env=/root/environment.conf
+
+  echo tfc_token=${tfc_token} > $env 
+  echo address=${tfc_addr} >> $env 
+  echo organization=${tfc_org} >> $env 
+  echo tfc_var_set=${tfc_var_set} >> $env 
+
+  #export tfc_token=${tfc_token}
+  #export address=${tfc_addr}
+  #export organization=${tfc_org}
+  #export tfc_var_set=${tfc_var_set}
   
   # wait until vault service is in active state
   x=1
@@ -368,6 +375,7 @@ vault_init() {
 
   if [[ -e /root/vault_init.txt ]]
   then
+    source $env 
     n=1 
     cat /root/vault_init.txt | grep ^"Recovery Key " | awk -F: '{print $2}' |\
      while read key 

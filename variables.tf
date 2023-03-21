@@ -213,7 +213,11 @@ variable "vault_init" {
 
 variable "tfc_var_set" {
   description  = "The name of the Var-Set to be used to store the initial secret zero"
-  default      = "vault_secret_zero"
+  default      = "NULL"
+}
+
+variable "tfc_workspace" {
+  default     = "NULL"
 }
 
 variable "tfc_token" {
@@ -225,5 +229,5 @@ variable "tfc_address" {
 }
 
 variable "tfc_org" {
-  default     = "JoeStack" 
+  default     = "NULL" 
 }

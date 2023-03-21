@@ -64,6 +64,7 @@ data "template_file" "server" {
     tfc_addr          = var.tfc_address
     tfc_org           = var.tfc_org
     tfc_var_set       = var.tfc_var_set
+    tfc_workspace     = var.tfc_workspace
   }
 }
 

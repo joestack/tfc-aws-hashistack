@@ -352,6 +352,7 @@ vault_init() {
   echo address=${tfc_addr} >> $env 
   echo organization=${tfc_org} >> $env 
   echo tfc_var_set=${tfc_var_set} >> $env 
+  echo workspace=${tfc_workspace} >> $env 
 
   
   # wait until vault service is in active state
@@ -371,7 +372,7 @@ vault_init() {
 
   if [[ -e /root/vault_init.txt ]]
   then
-    tf_vars.sh -0
+    tf_vars.sh -1
   else 
     exit 1
   fi 

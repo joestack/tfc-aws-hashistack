@@ -375,7 +375,9 @@ vault_init() {
 
   if [[ -e /root/vault_init.txt ]]
   then
-    source $env 
+    source $env
+    tf_var.sh -d $tfc_var_set
+    tf_var.sh -c $tfc_var_set
     n=1 
     cat /root/vault_init.txt | grep ^"Recovery Key " | awk -F: '{print $2}' |\
      while read key 

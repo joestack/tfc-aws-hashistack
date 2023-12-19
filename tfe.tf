@@ -42,7 +42,8 @@ resource "aws_instance" "tfe" {
   count                       = var.terraform_enabled ? 1 : 0
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.medium"
-  subnet_id                   = element(aws_subnet.hcstack_subnet.*.id, count.index)
+  #subnet_id                   = element(aws_subnet.hcstack_subnet.*.id, count.index)
+  subnet_id                   = element(module.vpc.public_subnets[*], count.index)
   associate_public_ip_address = "true"
   vpc_security_group_ids      = [aws_security_group.tfe[count.index].id]
   key_name                    = var.key_name

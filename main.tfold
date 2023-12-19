@@ -30,25 +30,85 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# data "aws_ami" "rhel" {
+#   most_recent = true
+#   owners      = ["309956199498"] // Red Hat's Account ID
+#   filter {
+#     name   = "name"
+#     values = ["RHEL-8.5*"]
+#   }
+#   filter {
+#     name   = "architecture"
+#     values = ["x86_64"]
+#   }
+#   filter {
+#     name   = "root-device-type"
+#     values = ["ebs"]
+#   }
+#   filter {
+#     name   = "virtualization-type"
+#     values = ["hvm"]
+#   }
+# }
+
+# data "aws_ami" "fedora" {
+#   most_recent = true
+
+#   filter {
+#     name   = "name"
+#     values = ["Fedora*"]
+#   }
+
+#   filter {
+#     name   = "virtualization-type"
+#     values = [ "hvm"]
+#   }
+
+#   owners = ["125523088429"] 
+# }
+
 // network and security
 
+resource "aws_vpc" "hashicorp_vpc" {
+  cidr_block           = var.network_address_space
+  enable_dns_hostnames = "true"
+  tags = {
+    Name = "${var.name}-vpc"
+  }
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.hashicorp_vpc.id
+
+}
+
+resource "aws_route_table" "rtb" {
+  vpc_id = aws_vpc.hashicorp_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+  tags = {
+    Name = "${var.name}-IGW"
+  }
+}
+
+resource "aws_route_table_association" "hcstack-rtb" {
+  count          = var.server_count
+  subnet_id      = element(aws_subnet.hcstack_subnet.*.id, count.index)
+  route_table_id = aws_route_table.rtb.id
+}
 
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.10.0"
-
-  azs                     = data.aws_availability_zones.available.names
-  cidr                    = var.network_address_space
-  enable_dns_hostnames    = true
-  #enable_nat_gateway      = true
-  #single_nat_gateway      = false
-  #one_nat_gateway_per_az  = false
-  name                    = "${var.name}-vpc"
-  #private_subnets         = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
-  private_subnets         = []
-  public_subnets          = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  #database_subnets        = ["10.0.21.0/24", "10.0.22.0/24", "10.0.23.0/24"]
+resource "aws_subnet" "hcstack_subnet" {
+  count                   = var.server_count
+  vpc_id                  = aws_vpc.hashicorp_vpc.id
+  cidr_block              = cidrsubnet(var.network_address_space, 8, count.index + 1)
+  map_public_ip_on_launch = "true"
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
+  tags = {
+    Name = "${var.name}-subnet"
+  }
 }
 
 ###############################
@@ -57,7 +117,7 @@ module "vpc" {
 resource "aws_security_group" "primary" {
   name        = "${var.name}-primary-sg"
   description = "Primary ASG"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = aws_vpc.hashicorp_vpc.id
 }
 
 resource "aws_security_group_rule" "ssh" {
@@ -222,7 +282,7 @@ resource "aws_security_group" "tfe" {
   count       = var.terraform_enabled ? 1 : 0
   name        = "${var.name}-tfe-sg"
   description = "TFE ASG"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = aws_vpc.hashicorp_vpc.id
 }
 
 resource "aws_security_group_rule" "tfe-ssh" {

@@ -82,7 +82,7 @@ resource "aws_instance" "server" {
   count                       = local.server_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = element(module.vpc.public_subnets[*], count.index)
+  subnet_id                   = element(aws_subnet.hcstack_subnet.*.id, count.index)
   associate_public_ip_address = "true"
   vpc_security_group_ids      = [aws_security_group.primary.id]
   key_name                    = var.key_name

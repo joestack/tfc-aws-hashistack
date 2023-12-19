@@ -41,3 +41,7 @@ output "consul_init_token" {
 output "cluster_fqdn" {
   value = aws_route53_record.server.*.fqdn
 }
+
+output "consul_datacenter" {
+  value = var.datacenter
+}

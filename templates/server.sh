@@ -77,6 +77,10 @@ EnvironmentFile=/etc/vault.d/vault.conf
 PermissionsStartOnly=true
 ExecStartPre=/sbin/setcap 'cap_ipc_lock=+ep' /usr/bin/vault
 ExecStart=/usr/bin/vault server -config /etc/vault.d \$FLAGS
+#NEW/
+Capabilities=CAP_IPC_LOCK+ep
+CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+#/NEW
 ExecReload=/bin/kill -HUP \$MAINPID
 KillSignal=SIGTERM
 User=vault

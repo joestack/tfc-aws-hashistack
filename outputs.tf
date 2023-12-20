@@ -45,3 +45,7 @@ output "cluster_fqdn" {
 output "consul_datacenter" {
   value = var.datacenter
 }
+
+output "cluster_url" {
+  value = aws_route53_record.server.*.fqdn[0]
+}

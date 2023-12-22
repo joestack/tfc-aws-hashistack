@@ -110,13 +110,14 @@ sudo chown -R consul:consul /opt/consul/
 
 sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
 data_dir         = "/opt/consul/"
+log_level        = "DEBUG"
 server           = true
 license_path     = "/opt/consul/license.hclic"
 bootstrap_expect = ${server_count}
 advertise_addr   = "$(private_ip)"
 bind_addr        = "$(private_ip)"
 client_addr      = "0.0.0.0"
-#ui               = true
+ui               = true
 datacenter       = "${datacenter}"
 retry_join       = ["provider=aws tag_key=auto_join tag_value=${auto_join_value}"]
 retry_max        = 10

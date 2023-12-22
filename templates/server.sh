@@ -117,7 +117,7 @@ bootstrap_expect = ${server_count}
 advertise_addr   = "$(private_ip)"
 bind_addr        = "$(private_ip)"
 client_addr      = "0.0.0.0"
-ui               = true
+#ui               = true
 datacenter       = "${datacenter}"
 retry_join       = ["provider=aws tag_key=auto_join tag_value=${auto_join_value}"]
 retry_max        = 10
@@ -133,7 +133,7 @@ acl = {
   enabled = true
   default_policy = "deny"
   enable_token_persistence = true
-  tokens {
+  tokens = {
     initial_management               = "${consul_init_token}"
     agent                            = "${consul_agent_token}"
     default                          = "${consul_dns_token}"

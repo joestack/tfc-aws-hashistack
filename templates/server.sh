@@ -110,7 +110,7 @@ sudo chown -R consul:consul /opt/consul/
 
 sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
 data_dir         = "/opt/consul/"
-log_level        = "DEBUG"
+log_level        = "INFO"
 server           = true
 leave_on_terminate = true
 license_path     = "/opt/consul/license.hclic"
@@ -137,6 +137,7 @@ acl = {
   enable_token_persistence = true
   tokens = {
     initial_management = "${consul_init_token}"
+    agent              = "${consul_agent_token}"
   }
 }
 

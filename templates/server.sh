@@ -137,7 +137,6 @@ acl = {
   enable_token_persistence = true
   tokens = {
     initial_management = "${consul_init_token}"
-    agent              = "${consul_agent_token}"
   }
 }
 

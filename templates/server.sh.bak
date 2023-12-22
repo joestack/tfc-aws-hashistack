@@ -112,7 +112,6 @@ sudo tee /etc/consul.d/consul.hcl > /dev/null <<EOF
 data_dir         = "/opt/consul/"
 log_level        = "DEBUG"
 server           = true
-leave_on_terminate = true
 license_path     = "/opt/consul/license.hclic"
 bootstrap_expect = ${server_count}
 advertise_addr   = "$(private_ip)"
@@ -133,10 +132,12 @@ encrypt = "${consul_gossip_key}"
 acl = {
   enabled = true
   default_policy = "deny"
-  down_policy = "extend-cache"
   enable_token_persistence = true
   tokens = {
-    initial_management = "${consul_init_token}"
+    initial_management               = "${consul_init_token}"
+    agent                            = "${consul_agent_token}"
+    default                          = "${consul_dns_token}"
+    #config_file_service_registration = "${consul_service_token}"
   }
 }
 
@@ -148,10 +149,6 @@ ports = {
   https = 8501
   grpc = 8502
   grpc_tls = 8503
-}
-
-connect = {
-  enabled = true
 }
 
 tls {

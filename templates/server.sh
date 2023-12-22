@@ -157,8 +157,10 @@ connect = {
 tls {
   defaults {
     key_file = "/etc/ssl/certs/hashistack_privkey.key"
-    cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
-    ca_file = "/etc/ssl/certs/hashistack_ca.pem"
+    #cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
+    #ca_file = "/etc/ssl/certs/hashistack_ca.pem"
+    cert_file = "/etc/ssl/certs/hashistack_ca.pem"
+    ca_file = "/etc/ssl/certs/hashistack_fullchain.pem"
     verify_incoming = true
     verify_outgoing = true
   }

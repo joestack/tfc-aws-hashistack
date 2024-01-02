@@ -178,7 +178,8 @@ sudo tee /etc/consul.d/acl.json > /dev/null <<EOF
         "down_policy": "extend-cache",
         "enable_token_persistence": true,
         "tokens": {
-            "initial_management": "${consul_init_token}"
+            "initial_management": "${consul_init_token}",
+            "agent": "${consul_agent_token}"
         }
     }
 }

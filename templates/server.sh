@@ -130,15 +130,15 @@ ui_config = {
 
 encrypt = "${consul_gossip_key}"
 
-# acl = {
-#   enabled = true
-#   default_policy = "deny"
-#   down_policy = "extend-cache"
-#   enable_token_persistence = true
-#   tokens = {
-#     initial_management = "${consul_init_token}"
-#   }
-# }
+acl = {
+  enabled = true
+  default_policy = "deny"
+  down_policy = "extend-cache"
+  enable_token_persistence = true
+  tokens = {
+    initial_management = "${consul_init_token}"
+  }
+}
 
 auto_encrypt {
   allow_tls = true
@@ -170,20 +170,19 @@ tls {
 
 EOF
 
-sudo tee /etc/consul.d/acl.json > /dev/null <<EOF
-{
-    "acl": {
-        "enabled": true,
-        "default_policy": "deny",
-        "down_policy": "extend-cache",
-        "enable_token_persistence": true,
-        "tokens": {
-            "initial_management": "${consul_init_token}",
-            "agent": "${consul_agent_token}"
-        }
-    }
-}
-EOF
+# sudo tee /etc/consul.d/acl.json > /dev/null <<EOF
+# {
+#     "acl": {
+#         "enabled": true,
+#         "default_policy": "deny",
+#         "down_policy": "extend-cache",
+#         "enable_token_persistence": true,
+#         "tokens": {
+#             "initial_management": "${consul_init_token}"
+#         }
+#     }
+# }
+# EOF
 
 echo "Consul ENV "
 sudo tee /etc/consul.d/consul.conf > /dev/null <<ENVVARS

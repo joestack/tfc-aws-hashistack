@@ -154,6 +154,23 @@ connect = {
   enabled = true
 }
 
+# tls {
+#   defaults {
+#     key_file = "/etc/ssl/certs/hashistack_privkey.key"
+#     cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
+#     ca_file = "/etc/ssl/certs/hashistack_ca.pem"
+#     verify_incoming = true
+#     verify_outgoing = true
+#   }
+
+#   internal_rpc {
+#     verify_server_hostname = true
+#   }
+# }
+
+EOF
+
+sudo tee /etc/consul.d/tls.hcl > /dev/null <<EOF
 tls {
   defaults {
     key_file = "/etc/ssl/certs/hashistack_privkey.key"
@@ -167,8 +184,8 @@ tls {
     verify_server_hostname = true
   }
 }
-
 EOF
+
 
 echo "Consul ENV "
 sudo tee /etc/consul.d/consul.conf > /dev/null <<ENVVARS

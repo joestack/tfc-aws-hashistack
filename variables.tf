@@ -115,7 +115,10 @@ variable "consul_tls_enabled" {
   default     = "true"
 }
 
-//variable "datatenter" is used from the NOMAD SETTINGS block
+variable "datacenter" {
+  default = "dc1"
+}
+
 
 //NOMAD SETTINGS
 
@@ -137,9 +140,8 @@ variable "nomad_bootstrap" {
   default = "false"
 }
 
-variable "datacenter" {
-  default = "dc1"
-}
+//variable "datatenter" is used from the CONSUL SETTINGS block
+
 
 variable "region" {
   default = "global"
@@ -198,7 +200,7 @@ variable "tfe_cert_email" {
 }
 
 variable "tfe_auto_install" {
-  description = "run the tfe install.sh directly by the user-data script. You can run is manually if set to false"
+  description = "run the tfe install.sh directly by the user-data script. You can run it manually if set to false"
   default     = "true"
 }
 

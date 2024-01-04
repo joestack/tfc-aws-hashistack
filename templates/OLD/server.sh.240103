@@ -170,6 +170,20 @@ tls {
 
 EOF
 
+# sudo tee /etc/consul.d/acl.json > /dev/null <<EOF
+# {
+#     "acl": {
+#         "enabled": true,
+#         "default_policy": "deny",
+#         "down_policy": "extend-cache",
+#         "enable_token_persistence": true,
+#         "tokens": {
+#             "initial_management": "${consul_init_token}"
+#         }
+#     }
+# }
+# EOF
+
 echo "Consul ENV "
 sudo tee /etc/consul.d/consul.conf > /dev/null <<ENVVARS
 FLAGS=-ui -client 0.0.0.0
@@ -319,6 +333,16 @@ echo "==> Nomad Server is Installed!"
 }
 
 
+add_consul_to_vault() {
+
+sudo tee /etc/vault.d/service-consul.hcl > /dev/null <<EOF
+service_registration "consul" {
+  address = "localhost:8500"
+}
+EOF
+sudo chown -R vault:vault /etc/vault.d/
+}
+
 additionals() {
 sudo apt-get -y install consul-template jq
 }
@@ -387,6 +411,7 @@ vault_init() {
 common
 [[ ${vault_enabled} = "true" ]] && install_vault_apt 
 [[ ${consul_enabled} = "true" ]] && install_consul_apt
+#[[ ${vault_enabled} = "true" ]] && add_consul_to_vault
 [[ ${nomad_enabled} = "true" ]] && install_nomad_apt
 additionals
 tutorial

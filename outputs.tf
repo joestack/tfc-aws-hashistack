@@ -57,3 +57,7 @@ output "vpc_cidr" {
 output "vpc_id" {
   value = aws_vpc.hashicorp_vpc.id
 }
+
+output "hashistack_subnet" {
+  value = aws_subnet.hcstack_subnet.id
+}

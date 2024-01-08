@@ -62,6 +62,10 @@ output "hashistack_subnet" {
   value = aws_subnet.hcstack_subnet.*.id
 }
 
+output "consul_vpc_security_id" {
+  value = aws_security_group.primary.id
+}
+
 output "consul_ca_file" {
   value = base64encode(tls_private_key.ca.*.public_key_pem[0])
 }

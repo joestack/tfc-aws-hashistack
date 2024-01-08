@@ -59,5 +59,5 @@ output "vpc_id" {
 }
 
 output "hashistack_subnet" {
-  value = aws_subnet.hcstack_subnet.id
+  value = aws_subnet.hcstack_subnet.*.id
 }

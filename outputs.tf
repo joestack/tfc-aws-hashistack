@@ -38,18 +38,6 @@ output "consul_init_token" {
   value = var.consul_enabled ? local.consul_init_token : ""
 }
 
-output "consul_agent_token" {
-  value = var.consul_enabled ? local.consul_agent_token : ""
-}
-
-output "consul_dns_token" {
-  value = var.consul_enabled ? local.consul_dns_token : ""
-}
-
-output "consul_service_token" {
-  value = var.consul_enabled ? local.consul_service_token : ""
-}
-
 output "cluster_fqdn" {
   value = aws_route53_record.server.*.fqdn
 }

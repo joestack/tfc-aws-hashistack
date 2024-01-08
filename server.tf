@@ -15,11 +15,6 @@ locals {
   consul_gossip_key = random_id.gossip.b64_std
   consul_protocol   = var.consul_tls_enabled ? "https" : "http"
   consul_init_token = random_uuid.consul_init_token.id
-  consul_agent_token = random_uuid.consul_agent_token.id
-  consul_dns_token = random_uuid.consul_dns_token.id
-  consul_service_token = random_uuid.consul_service_token.id
-
-
   server_count      = anytrue([var.vault_enabled, var.consul_enabled, var.nomad_enabled]) ? var.server_count : 0
 }
 
@@ -57,9 +52,6 @@ data "template_file" "server" {
     consul_protocol   = local.consul_protocol
     consul_env_addr   = upper(local.consul_protocol)
     consul_init_token = local.consul_init_token
-    consul_agent_token = local.consul_agent_token
-    consul_dns_token = local.consul_dns_token
-    consul_service_token = local.consul_service_token
     nomad_enabled     = var.nomad_enabled
     nomad_version     = var.nomad_version
     nomad_apt         = local.nomad_apt
@@ -116,15 +108,6 @@ resource "random_id" "gossip" {
 }
 
 resource "random_uuid" "consul_init_token" {
-}
-
-resource "random_uuid" "consul_agent_token" {
-}
-
-resource "random_uuid" "consul_dns_token" {
-}
-
-resource "random_uuid" "consul_service_token" {
 }
 
 resource "aws_route53_record" "server" {

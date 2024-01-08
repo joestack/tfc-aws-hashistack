@@ -61,3 +61,7 @@ output "vpc_id" {
 output "hashistack_subnet" {
   value = aws_subnet.hcstack_subnet.*.id
 }
+
+output "consul_ca_file" {
+  value = base64_encode(tls_private_key.ca.public_key_pem)
+}

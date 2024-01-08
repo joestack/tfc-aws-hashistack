@@ -63,5 +63,5 @@ output "hashistack_subnet" {
 }
 
 output "consul_ca_file" {
-  value = base64_encode(tls_private_key.ca.*.public_key_pem[0])
+  value = base64encode(tls_private_key.ca.*.public_key_pem[0])
 }

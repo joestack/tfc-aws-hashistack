@@ -53,3 +53,7 @@ output "cluster_url" {
 output "vpc_cidr" {
   value = aws_vpc.hashicorp_vpc.cidr_block
 }
+
+output "vpc_id" {
+  value = aws_vpc.hashicorp_vpc.id
+}

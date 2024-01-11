@@ -67,10 +67,13 @@ output "consul_vpc_security_id" {
 }
 
 output "consul_ca_file" {
-  #value = base64encode(tls_private_key.ca.*.public_key_pem[0])
   value = base64encode(tls_self_signed_cert.ca.*.cert_pem[0])
 }
 
 output "consul_gossip_key" {
   value = local.consul_gossip_key
+}
+
+output "consul_version" {
+  value = var.consul_version
 }

@@ -1,6 +1,6 @@
 # Deploying a cluster that runs any combination of Vault, Consul, Nomad or Terraform (HashiStack)
 
-This repository is a one-size-fits-all approach to get easily started with the deployment of any of the above mentioned HashiCorp tools on AWS. The main focus is about simplicity and readability. It is purely based on Terraform IaC. The cluster TLS certs are provided by hashicorp/terraform-provider-tls. The instances are configured via "user-data" scripts (bash). The "user-data" scripts are dynamically rendered (hashicorp/terraform-provider-template) based on the assigned values in variables.tf.
+This repository is a one-size-fits-all approach to get easily started with the deployment of any of the above mentioned HashiCorp tools on AWS. The main focus is about simplicity and readability. It is purely based on Terraform IaC. The TLS certs are provided by hashicorp/terraform-provider-tls. The instances are configured via "user-data" scripts (bash). The "user-data" scripts are dynamically rendered (hashicorp/terraform-provider-template) based on the assigned values in variables.tf.
 
 ---
 > Its behavor can be customized by changing/overriding the defaults in variables.tf. (**take a look at the examples at the bottom**).
@@ -11,7 +11,6 @@ This repository is a one-size-fits-all approach to get easily started with the d
 ---
 
 ***Cluster Features***
-
 - variable cluster size (typical 1,3, or 5)
 - auto_join of server nodes
 - raft-clustering
@@ -19,26 +18,22 @@ This repository is a one-size-fits-all approach to get easily started with the d
 - configurable ingress CIDR (ACL)
 
 ***Vault Features***
-
 - auto-unseal (AWS_KMS)
 - TLS encryption
 
 ***Consul Features***
-
-- TLS encryption
+- TLS encryption provided by hashicorp/terraform-provider-tls (certbot cannot be used to create necessary SANs)
 - Gossip encryption
 - ACL bootstrapping
 
 ***Nomad Features***
-
 - configurable amount of worker nodes
 - auto bootstrapping
 
 ***Terraform Enterprise Features***
-
-- letsenrypt (certbot) TLS
-- airgapped license support
-- "mounted disk" storage backend
+- letsenrypt (certbot) webbrowser friendly TLS certificates  
+- airgapp license support
+- storage backend is based on "mounted disk" 
 
 ---
 
@@ -114,6 +109,16 @@ This repository is a one-size-fits-all approach to get easily started with the d
 | tfe_cert_provider | (optional) TLS Certificate options [self-signed, certbot, tf-tls-provider] | certbot |
 | tfe_cert_email | (required if certbot) Certbot email address | none |
 | tfe_auto_install | (optional) Automatically install TFE on instance [true, false] | true |
+
+---
+
+> # !!! Pro Tip !!!
+> A nice and secure way to inject variables into a Terraform [Cloud/Enterprise] Workspace can be found here: https://github.com/joestack/tfc-api-bootstrap-script
+>
+> * automating the setup of a Terraform Workspace
+> * connecting the Workspace with a VCS repository
+> * injecting sensitive and non-sensitive variables into the Workspace
+> * optional triggering a VCS driven run (plan and apply)
 
 ---
 

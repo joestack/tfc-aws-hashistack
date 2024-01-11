@@ -77,3 +77,7 @@ output "consul_gossip_key" {
 output "consul_version" {
   value = var.consul_version
 }
+
+output "aws_region" {
+  value = var.aws_region
+}

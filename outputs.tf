@@ -47,7 +47,7 @@ output "consul_datacenter" {
 }
 
 output "cluster_url" {
-  value = "${aws_route53_record.server.*.fqdn[0]}:8500"
+  value = aws_route53_record.server.*.fqdn[0]
 }
 
 output "vpc_cidr" {

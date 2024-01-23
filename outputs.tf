@@ -39,7 +39,7 @@ output "consul_init_token" {
 }
 
 output "cluster_fqdn" {
-  value = "${aws_route53_record.server.*.fqdn}:8500"
+  value = aws_route53_record.server.*.fqdn
 }
 
 output "consul_datacenter" {
@@ -47,7 +47,7 @@ output "consul_datacenter" {
 }
 
 output "cluster_url" {
-  value = aws_route53_record.server.*.fqdn[0]
+  value = "${aws_route53_record.server.*.fqdn[0]}:8500"
 }
 
 output "vpc_cidr" {

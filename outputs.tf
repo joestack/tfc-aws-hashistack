@@ -81,3 +81,9 @@ output "consul_version" {
 output "aws_region" {
   value = var.aws_region
 }
+
+output "vault_admin_token" {
+  value = var.vault_init ? (
+    var.vault_admin_token
+  ) : null
+}

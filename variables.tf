@@ -233,3 +233,7 @@ variable "tfc_address" {
 variable "tfc_org" {
   default     = "NULL" 
 }
+
+variable "vault_admin_token" {
+  default = "NULL"
+}

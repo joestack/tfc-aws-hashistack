@@ -81,3 +81,7 @@ output "consul_version" {
 output "aws_region" {
   value = var.aws_region
 }
+
+output "tls_self_signed_cert" {
+  value = tls_self_signed_cert.ca.cert_pem
+}

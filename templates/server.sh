@@ -176,7 +176,7 @@ tls {
     key_file = "/etc/ssl/certs/hashistack_privkey.key"
     cert_file = "/etc/ssl/certs/hashistack_fullchain.pem"
     ca_file = "/etc/ssl/certs/hashistack_ca.pem"
-    verify_incoming = true
+    verify_incoming = false
     verify_outgoing = true
   }
 

@@ -111,29 +111,6 @@ resource "aws_subnet" "hcstack_subnet" {
   }
 }
 
-resource "aws_subnet" "web_subnet" {
-  #count                   = var.server_count
-  vpc_id                  = aws_vpc.hashicorp_vpc.id
-  cidr_block              = cidrsubnet(var.network_address_space, 4, 1)
-  #map_public_ip_on_launch = "true"
-  #availability_zone       = element(data.aws_availability_zones.available.names, count.index)
-  tags = {
-    Name = "web-subnet"
-  }
-}
-
-
-resource "aws_subnet" "db_subnet" {
-  #count                   = var.server_count
-  vpc_id                  = aws_vpc.hashicorp_vpc.id
-  cidr_block              = cidrsubnet(var.network_address_space, 4, 2)
-  #map_public_ip_on_launch = "true"
-  #availability_zone       = element(data.aws_availability_zones.available.names, count.index)
-  tags = {
-    Name = "db-subnet"
-  }
-}
-
 ###############################
 #######      ASG      #########
 

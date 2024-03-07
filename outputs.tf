@@ -95,3 +95,15 @@ output "web_subnet_cidr" {
 output "db_subnet_cidr" {
   value = aws_subnet.db_subnet.cidr_block
 }
+
+output "web_subnet" {
+  value = aws_subnet.web_subnet.id
+}
+
+output "db_subnet" {
+  value = aws_subnet.db_subnet.id
+}
+
+output "workload_vpc_security_id" {
+  value = aws_security_group.consul-workload.id
+}

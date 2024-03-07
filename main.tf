@@ -358,3 +358,31 @@ resource "aws_security_group_rule" "tfe-egress" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+// Consul Workload
+
+resource "aws_security_group" "consul-workload" {
+  count       = var.consul_enabled? 1 : 0
+  name        = "${var.name}-consul-workload"
+  description = "Consul Workload ASG"
+  vpc_id      = aws_vpc.hashicorp_vpc.id
+}
+
+resource "aws_security_group_rule" "consul-1" {
+  count             = var.consul_enabled ? 1 : 0
+  security_group_id = aws_security_group.consul-workload[count.index].id
+  type              = "ingress"
+  from_port         = 21000
+  to_port           = 21255
+  protocol          = "tcp"
+  cidr_blocks       = [var.whitelist_ip]
+}
+
+resource "aws_security_group_rule" "egress" {
+  count             = var.consul_enabled ? 1 : 0
+  security_group_id = aws_security_group.consul-workload[count.index].id
+  type              = "egress"
+  from_port         = 0
+  to_port           = 5
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}

@@ -114,7 +114,7 @@ resource "aws_subnet" "hcstack_subnet" {
 resource "aws_subnet" "web_subnet" {
   #count                   = var.server_count
   vpc_id                  = aws_vpc.hashicorp_vpc.id
-  cidr_block              = cidrsubnet(var.network_address_space, 4, 1)
+  cidr_block              = cidrsubnet(var.network_address_space, 8, 10)
   #map_public_ip_on_launch = "true"
   #availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   tags = {
@@ -126,7 +126,7 @@ resource "aws_subnet" "web_subnet" {
 resource "aws_subnet" "db_subnet" {
   #count                   = var.server_count
   vpc_id                  = aws_vpc.hashicorp_vpc.id
-  cidr_block              = cidrsubnet(var.network_address_space, 4, 2)
+  cidr_block              = cidrsubnet(var.network_address_space, 8, 20)
   #map_public_ip_on_launch = "true"
   #availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   tags = {

@@ -377,6 +377,17 @@ resource "aws_security_group_rule" "consul-1" {
   cidr_blocks       = [var.whitelist_ip]
 }
 
+resource "aws_security_group_rule" "consul-ssh" {
+  count             = var.consul_enabled ? 1 : 0
+  security_group_id = aws_security_group.consul-workload[count.index].id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = [var.whitelist_ip]
+}
+
+
 resource "aws_security_group_rule" "egress-workload" {
   count             = var.consul_enabled ? 1 : 0
   security_group_id = aws_security_group.consul-workload[count.index].id

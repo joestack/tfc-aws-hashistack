@@ -105,5 +105,5 @@ output "db_subnet" {
 }
 
 output "workload_vpc_security_id" {
-  value = aws_security_group.consul-workload.id[0]
+  value = aws_security_group.consul-workload[0].id
 }

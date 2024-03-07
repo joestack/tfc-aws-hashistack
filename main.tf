@@ -134,6 +134,18 @@ resource "aws_subnet" "db_subnet" {
   }
 }
 
+resource "aws_route_table_association" "web-rtb" {
+  #count          = var.server_count
+  subnet_id      = aws_subnet.web_subnet.id
+  route_table_id = aws_route_table.rtb.id
+}
+
+resource "aws_route_table_association" "db-rtb" {
+  #count          = var.server_count
+  subnet_id      = aws_subnet.db_subnet.id
+  route_table_id = aws_route_table.rtb.id
+}
+
 ###############################
 #######      ASG      #########
 

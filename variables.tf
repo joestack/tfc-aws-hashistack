@@ -166,11 +166,6 @@ variable "terraform_enabled" {
   default = "false"
 }
 
-variable "tfe_method" {
-  description = "TFE FDO installation methodology"
-  default = "docker"
-}
-
 variable "tfe_airgapped" {
   description = "[true or false] The value of tfe_lic has to be `base64 -w0 ` encoded if set to true"
   default     = "false"

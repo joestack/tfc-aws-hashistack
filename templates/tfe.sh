@@ -183,7 +183,7 @@ run_installer() {
 ####################
 #####   MAIN   #####
 ####################
-prerequisites
-cert_is_${tfe_cert_provider}
-application_settings
-run_installer
+#prerequisites
+#cert_is_${tfe_cert_provider}
+#application_settings
+#run_installer

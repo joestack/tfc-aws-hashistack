@@ -105,5 +105,6 @@ output "db_subnet" {
 }
 
 output "workload_vpc_security_id" {
-  value = aws_security_group.consul-workload[0].id
+    value = var.consul_enabled ? aws_security_group.consul-workload[0].id : "NULL"
+
 }
